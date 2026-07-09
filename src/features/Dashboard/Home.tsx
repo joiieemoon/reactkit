@@ -6,6 +6,7 @@ import MonthlyTarget from "./components/monthly-target";
 import RecentOrders from "./components/recent-orders";
 
 import PageMeta from "../../components/common/PageMeta";
+import ModalTest from "../../components/ui/confirmation-modal/Testdelete";
 
 export default function Home() {
   return (
@@ -32,6 +33,7 @@ export default function Home() {
         <div className="col-span-12 ">
           <RecentOrders />
         </div>
+       
       </div>
     </>
   );

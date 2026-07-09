@@ -1,8 +1,8 @@
 
-import Input from "../input-fields";
+import Input from "../../../form/input/input-fields";
 export interface InputControllerProps
     extends React.ComponentProps<typeof Input> {
-    control: "input" | "textarea" | "select" | "checkbox" | string;
+    control: "input" | "textarea" | "select" | "checkbox" | "radio" | "file" | "multi-select" | string;
 }
 export interface InputProps {
     type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
@@ -84,11 +84,16 @@ export interface InputProps {
 //     onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 //     }
 export interface FormField {
-    email?: string,
-    name?: string,
-    label?: string,
-    type?: "text" | "area" | "password" | "" | string,
-    placeholder?: string,
-    autoComplete?: string,
+    name: string;
+    label: string;
+    type: "text" | "email" | "password" | "textarea";
+    placeholder?: string;
+    autoComplete?: string;
 
-} 
+    // Layout
+    colSpan?: 6 | 12;
+
+    // Future extensibility
+    required?: boolean;
+    disabled?: boolean;
+}

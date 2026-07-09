@@ -14,5 +14,9 @@ export default defineConfig({
         namedExport: "ReactComponent",
       },
     }),
+
   ],
+  server: {
+    host: true,
+  }
 });

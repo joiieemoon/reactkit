@@ -1,53 +1,91 @@
 import { FormField } from "../types";
+
 export const signupFields: FormField[] = [
     {
         name: "firstName",
         label: "First Name",
         type: "text",
         placeholder: "Jainil",
+        autoComplete: "given-name",
+        colSpan: 6,
+        required: true,
     },
     {
         name: "lastName",
         label: "Last Name",
         type: "text",
-        placeholder: "kukrolia",
+        placeholder: "Kukrolia",
+        autoComplete: "family-name",
+        colSpan: 6,
+        required: true,
     },
     {
         name: "email",
         label: "Email",
-        type: "text",
+        type: "email",
         placeholder: "joiie@yopmail.com",
-        autoComplete: "username",
-
+        autoComplete: "email",
+        colSpan: 12,
+        required: true,
     },
-
     {
         name: "password",
         label: "Password",
         type: "password",
         placeholder: "Enter password",
-        autoComplete: "password"
-
+        autoComplete: "new-password",
+        colSpan: 12,
+        required: true,
     },
     {
         name: "cpassword",
-        label: "confirm Password",
+        label: "Confirm Password",
         type: "password",
-        placeholder: "Enter Confirm password",
-        autoComplete: "password"
+        placeholder: "Confirm password",
+        autoComplete: "new-password",
+        colSpan: 12,
+        required: true,
     },
-    {
-        name: "username",
-        label: "User Name",
-        type: "text",
-        placeholder: "Enter User Name",
-
-    },
-
-
-
 ];
 
+export const locationFields = [
+    {
+        name: "country",
+        label: "Country",
+        type: "text",
+        placeholder: "India",
+        autoComplete: "country-name",
+        required: true,
+        colSpan: 6,
+    },
+    {
+        name: "cityState",
+        label: "City/State",
+        type: "text",
+        placeholder: "Ahemdabad, India",
+        autoComplete: "address-level1",
+        required: true,
+        colSpan: 6,
+    },
+    {
+        name: "postalCode",
+        label: "Postal Code",
+        type: "text",
+        placeholder: "389212 ",
+        autoComplete: "postal-code",
+        required: true,
+        colSpan: 6,
+    },
+    {
+        name: "taxId",
+        label: "TAX ID",
+        type: "text",
+        placeholder: "AS4568384",
+        autoComplete: "off",
+        required: true,
+        colSpan: 6,
+    },
+];
 export const loginFields: FormField[] = [
     {
         name: "email",
@@ -65,60 +103,96 @@ export const loginFields: FormField[] = [
     },
 
 ];
-export const editUserFields: FormField[] = [
-    { name: "firstName", label: "First Name", type: "text", placeholder: "Jainil" },
-    { name: "lastName", label: "Last Name", type: "text", placeholder: "Kukrolia" },
-    { name: "email", label: "Email", type: "email", placeholder: "joiie@yopmail.com" },
-    { name: "role", label: "Role", type: "select", placeholder: "" },
-];
-export const updateFields = [
-    { name: "firstName", label: "First Name", type: "text", placeholder: "Jainil" },
-    { name: "lastName", label: "Last Name", type: "text", placeholder: "kukrolia" },
-    { name: "email", label: "Email Address", type: "text", placeholder: "joiie@yopmail.com" },
 
+export interface ProfileField {
+    name: string;
+    label: string;
+    type: string;
+    placeholder?: string;
+    autoComplete?: string;
+    required?: boolean;
+    colSpan?: number;
+}
+
+export const socialFields: ProfileField[] = [
+    {
+        name: "facebook",
+        label: "Facebook",
+        type: "text",
+        placeholder: "https://facebook.com/username",
+        required: false,
+        colSpan: 6,
+    },
+    {
+        name: "twitter",
+        label: "X.com",
+        type: "text",
+        placeholder: "https://x.com/username",
+        required: false,
+        colSpan: 6,
+    },
+    {
+        name: "linkedin",
+        label: "LinkedIn",
+        type: "text",
+        placeholder: "https://linkedin.com/in/username",
+        required: false,
+        colSpan: 6,
+    },
+    {
+        name: "instagram",
+        label: "Instagram",
+        type: "text",
+        placeholder: "https://instagram.com/username",
+        required: false,
+        colSpan: 6,
+    },
 ];
 
-export const updateuserFiels = [
-    { name: "firstName", label: "First Name", type: "text" },
-    { name: "lastName", label: "Last Name", type: "text" },
-    // { name: "email", label: "Email Address", type: "text" },
-    { name: "username", label: "user Name", type: "text" },
 
-
-];
-export const updateRoleFields = [
-    { name: "title", label: "Role Name", type: "text" },
-    { name: "status", label: "Status", type: "select" },
-];
-export const updateusersFields = (id: number ) => [
+export const personalFields: ProfileField[] = [
     {
         name: "firstName",
         label: "First Name",
-        type: "input",
-        placeholder: "Jainil",
+        type: "text",
+        placeholder: "Enter first name",
+        autoComplete: "given-name",
+        required: true,
+        colSpan: 6,
     },
     {
         name: "lastName",
         label: "Last Name",
-        type: "input",
-        placeholder: "kukrolia",
-    },
-    {
-        name: "username",
-        label: "Username",
-        type: "input",
-        placeholder: "joiiee",
+        type: "text",
+        placeholder: "Enter last name",
+        autoComplete: "family-name",
+        required: true,
+        colSpan: 6,
     },
     {
         name: "email",
-        label: "Email",
-        type: "input",
-        placeholder: "jainilkukrolia@yopmail.com",
+        label: "Email Address",
+        type: "email",
+        placeholder: "Enter email",
+        autoComplete: "email",
+        required: true,
+        colSpan: 6,
     },
     {
-        name: "password",
-        label: !id ? "Password" : "Reset Password",
-        type: "input",
-        placeholder: "Enter valid Password",
+        name: "phone",
+        label: "Phone",
+        type: "text",
+        placeholder: "Enter phone number",
+        autoComplete: "tel",
+        required: true,
+        colSpan: 6,
+    },
+    {
+        name: "bio",
+        label: "Bio",
+        type: "text",
+        placeholder: "Enter bio",
+        required: false,
+        colSpan: 12,
     },
 ];

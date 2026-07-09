@@ -1,9 +1,13 @@
 import { useModal } from "../../../../hooks/useModal";
 import { Modal } from "../../../../components/ui/modal";
 import Button from "../../../../components/ui/button/Button";
-import Input from "../../../../components/form/input/InputField";
-import Label from "../../../../components/form/Label";
-
+import { Formik, Form } from "formik";
+import {
+  personalFields,
+  socialFields,
+} from "../../../../components/ui/input/input-config";
+import { profileValidationSchema } from "../../../../components/ui/input/validation";
+import InputField from "../../../../components/form/input/InputField";
 export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {
@@ -11,17 +15,41 @@ export default function UserMetaCard() {
     console.log("Saving changes...");
     closeModal();
   };
+  interface PersonalInfoFormValues {
+    facebook: string;
+    twitter: string;
+    linkedin: string;
+    instagram: string;
+
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    bio: string;
+  }
+  const initialProfileValues: PersonalInfoFormValues = {
+    facebook: "https://www.facebook.com/joieeedev",
+    twitter: "https://x.com/joieeedev",
+    linkedin: "https://www.linkedin.com/in/joieeedev",
+    instagram: "https://www.instagram.com/joieeedev",
+
+    firstName: "Joieee",
+    lastName: "Dev",
+    email: "joieee.dev@example.com",
+    phone: "+91 98765 43210",
+    bio: "React Developer passionate about creating modern, responsive, and user-friendly web applications.",
+  };
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
             <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
-              <img src="/images/user/owner.jpg" alt="user" />
+              <img src="/images/user/owner.png" alt="user" />
             </div>
             <div className="order-3 xl:order-2">
               <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
-                Musharof Chowdhury
+                Joiieee Dev
               </h4>
               <div className="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -29,13 +57,13 @@ export default function UserMetaCard() {
                 </p>
                 <div className="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Arizona, United States
+                  Ahemdabd, India 
                 </p>
               </div>
             </div>
             <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
               <a
-                href="https://www.facebook.com/PimjoHQ"
+                href="https://www.facebook.com/joiiedevv"
                 target="_blank"
                 rel="noopener"
                 className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
@@ -56,7 +84,7 @@ export default function UserMetaCard() {
               </a>
 
               <a
-                href="https://x.com/PimjoHQ"
+                href="https://x.com/joiiee"
                 target="_blank"
                 rel="noopener"
                 className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
@@ -77,7 +105,7 @@ export default function UserMetaCard() {
               </a>
 
               <a
-                href="https://www.linkedin.com/company/pimjo"
+                href="https://www.linkedin.com/joiee"
                 target="_blank"
                 rel="noopener"
                 className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
@@ -98,7 +126,7 @@ export default function UserMetaCard() {
               </a>
 
               <a
-                href="https://instagram.com/PimjoHQ"
+                href="https://instagram.com/joiee"
                 target="_blank"
                 rel="noopener"
                 className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
@@ -148,87 +176,160 @@ export default function UserMetaCard() {
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
               Edit Personal Information
             </h4>
+
             <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
               Update your details to keep your profile up-to-date.
             </p>
           </div>
-          <form className="flex flex-col">
-            <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
-              <div>
-                <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                  Social Links
-                </h5>
 
-                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+          <Formik<PersonalInfoFormValues>
+            initialValues={initialProfileValues}
+            validationSchema={profileValidationSchema}
+            enableReinitialize
+            onSubmit={(values, { setSubmitting }) => {
+              try {
+                console.log("Profile Data:", values);
+
+                // Dummy save
+                localStorage.setItem("profile", JSON.stringify(values));
+
+                closeModal();
+              } catch (error) {
+                console.error("Failed to update profile", error);
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              isSubmitting,
+            }) => (
+              <Form className="flex flex-col">
+                <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+                  {/* Social Links */}
+
                   <div>
-                    <Label>Facebook</Label>
-                    <Input
-                      type="text"
-                      value="https://www.facebook.com/PimjoHQ"
-                    />
+                    <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
+                      Social Links
+                    </h5>
+
+                    <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                      {socialFields.map((field) => (
+                        <div key={field.name}>
+                          <InputField
+                            name={field.name}
+                            label={field.label}
+                            type={field.type}
+                            placeholder={field.placeholder}
+                            value={
+                              values[field.name as keyof PersonalInfoFormValues]
+                            }
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={Boolean(
+                              touched[
+                                field.name as keyof PersonalInfoFormValues
+                              ] &&
+                              errors[
+                                field.name as keyof PersonalInfoFormValues
+                              ],
+                            )}
+                            errorMessage={
+                              touched[
+                                field.name as keyof PersonalInfoFormValues
+                              ] &&
+                              errors[field.name as keyof PersonalInfoFormValues]
+                                ? errors[
+                                    field.name as keyof PersonalInfoFormValues
+                                  ]
+                                : undefined
+                            }
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
-                  <div>
-                    <Label>X.com</Label>
-                    <Input type="text" value="https://x.com/PimjoHQ" />
-                  </div>
+                  {/* Personal Information */}
 
-                  <div>
-                    <Label>Linkedin</Label>
-                    <Input
-                      type="text"
-                      value="https://www.linkedin.com/company/pimjo"
-                    />
-                  </div>
+                  <div className="mt-7">
+                    <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
+                      Personal Information
+                    </h5>
 
-                  <div>
-                    <Label>Instagram</Label>
-                    <Input type="text" value="https://instagram.com/PimjoHQ" />
+                    <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                      {personalFields.map((field) => (
+                        <div
+                          key={field.name}
+                          className={
+                            field.colSpan === 12 ? "lg:col-span-2" : ""
+                          }
+                        >
+                          <InputField
+                            name={field.name}
+                            label={
+                              <>
+                                {field.label}
+
+                                {field.required && (
+                                  <span className="text-error-500"> *</span>
+                                )}
+                              </>
+                            }
+                            type={field.type}
+                            placeholder={field.placeholder}
+                            value={
+                              values[field.name as keyof PersonalInfoFormValues]
+                            }
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={Boolean(
+                              touched[
+                                field.name as keyof PersonalInfoFormValues
+                              ] &&
+                              errors[
+                                field.name as keyof PersonalInfoFormValues
+                              ],
+                            )}
+                            errorMessage={
+                              touched[
+                                field.name as keyof PersonalInfoFormValues
+                              ] &&
+                              errors[field.name as keyof PersonalInfoFormValues]
+                                ? errors[
+                                    field.name as keyof PersonalInfoFormValues
+                                  ]
+                                : undefined
+                            }
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="mt-7">
-                <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                  Personal Information
-                </h5>
 
-                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>First Name</Label>
-                    <Input type="text" value="Musharof" />
-                  </div>
+                <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    type="button"
+                    onClick={closeModal}
+                  >
+                    Close
+                  </Button>
 
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>Last Name</Label>
-                    <Input type="text" value="Chowdhury" />
-                  </div>
-
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>Email Address</Label>
-                    <Input type="text" value="randomuser@pimjo.com" />
-                  </div>
-
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>Phone</Label>
-                    <Input type="text" value="+09 363 398 46" />
-                  </div>
-
-                  <div className="col-span-2">
-                    <Label>Bio</Label>
-                    <Input type="text" value="Team Manager" />
-                  </div>
+                  <Button size="sm" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Saving..." : "Save Changes"}
+                  </Button>
                 </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-              <Button size="sm" variant="outline" onClick={closeModal}>
-                Close
-              </Button>
-              <Button size="sm" onClick={handleSave}>
-                Save Changes
-              </Button>
-            </div>
-          </form>
+              </Form>
+            )}
+          </Formik>
         </div>
       </Modal>
     </>

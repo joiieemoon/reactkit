@@ -3,7 +3,7 @@ export const errorMessage = {
     letter: "this field only conatain letter",
     firstname: "Please enter first name.",
     lastname: "Please enter last name.",
-    email: "Please enter a  email address.",
+    email: "Please enter a valid email address",
     minLength: "This field must contain at least 6 characters.",
     password: "Please enter a  password.",
     passwordMatch: "Confirm Password must match with Password",

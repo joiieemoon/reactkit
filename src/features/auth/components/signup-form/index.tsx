@@ -1,13 +1,56 @@
-import { useState } from "react";
+import { useFormik } from "formik";
 import { Link } from "react-router";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../../../icons";
-import Label from "../../../../components/form/Label";
-import Input from "../../../../components/form/input/InputField";
-import Checkbox from "../../../../components/form/input/Checkbox";
+import { ChevronLeftIcon } from "../../../../icons";
+import InputField from "../../../../components/form/input/InputField";
+import Button from "../../../../components/ui/button/Button";
+import { signupFields } from "../../../../components/ui/input/input-config";
+import { signupvalidationSchema } from "../../../../components/ui/input/validation";
+import { signup } from "../../../../services/auth";
+
+interface SignUpFormValues {
+  [key: string]: string;
+}
+
+function buildInitialValues(): SignUpFormValues {
+  return signupFields.reduce<SignUpFormValues>((acc, field) => {
+    if (field.name) {
+      acc[field.name] = "";
+    }
+    return acc;
+  }, {});
+}
 
 export default function SignUpForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  const formik = useFormik<SignUpFormValues>({
+    initialValues: buildInitialValues(),
+    validationSchema: signupvalidationSchema.pick(
+      Object.keys(buildInitialValues()) as unknown as Parameters<
+        typeof signupvalidationSchema.pick
+      >[0],
+    ),
+    onSubmit: async (values, { setSubmitting, setFieldError }) => {
+      try {
+        const result = await signup(values);
+        if (!result.success) {
+          setFieldError("email", result.message);
+        }
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+
+  const {
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    isValid,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  } = formik;
+
   return (
     <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
       <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
@@ -82,92 +125,54 @@ export default function SignUpForm() {
                 </span>
               </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit} noValidate>
               <div className="space-y-5">
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  {/* <!-- First Name --> */}
-                  <div className="sm:col-span-1">
-                    <Label>
-                      First Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="fname"
-                      name="fname"
-                      placeholder="Enter your first name"
-                    />
-                  </div>
-                  {/* <!-- Last Name --> */}
-                  <div className="sm:col-span-1">
-                    <Label>
-                      Last Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="lname"
-                      name="lname"
-                      placeholder="Enter your last name"
-                    />
-                  </div>
-                </div>
-                {/* <!-- Email --> */}
-                <div>
-                  <Label>
-                    Email<span className="text-error-500">*</span>
-                  </Label>
-                  <Input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                {/* <!-- Password --> */}
-                <div>
-                  <Label>
-                    Password<span className="text-error-500">*</span>
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      placeholder="Enter your password"
-                      type={showPassword ? "text" : "password"}
-                    />
-                    <span
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                <div className="grid grid-cols-12 gap-5">
+                  {signupFields.map((field) => (
+                    <div
+                      key={field.name}
+                      className={
+                        field.colSpan === 6
+                          ? "col-span-12 sm:col-span-6"
+                          : "col-span-12"
+                      }
                     >
-                      {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-                      ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-                      )}
-                    </span>
-                  </div>
+                      <InputField
+                        name={field.name}
+                        type={field.type}
+                        label={
+                          <>
+                            {field.label}
+                            {field.required && (
+                              <span className="text-error-500">*</span>
+                            )}
+                          </>
+                        }
+                        placeholder={field.placeholder}
+                        autoComplete={field.autoComplete}
+                        value={values[field.name] ?? ""}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={Boolean(
+                          touched[field.name] && errors[field.name],
+                        )}
+                        errorMessage={
+                          touched[field.name] && errors[field.name]
+                            ? errors[field.name]
+                            : undefined
+                        }
+                      />
+                    </div>
+                  ))}
                 </div>
-                {/* <!-- Checkbox --> */}
-                <div className="flex items-center gap-3">
-                  <Checkbox
-                    className="w-5 h-5"
-                    checked={isChecked}
-                    onChange={setIsChecked}
-                  />
-                  <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
-                    By creating an account means you agree to the{" "}
-                    <span className="text-gray-800 dark:text-white/90">
-                      Terms and Conditions,
-                    </span>{" "}
-                    and our{" "}
-                    <span className="text-gray-800 dark:text-white">
-                      Privacy Policy
-                    </span>
-                  </p>
-                </div>
-                {/* <!-- Button --> */}
-                <div>
-                  <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
-                    Sign Up
-                  </button>
-                </div>
+
+                <Button
+                  className="w-full"
+                  size="sm"
+                  disabled={!isValid || isSubmitting}
+                >
+                  {isSubmitting ? "Signing up..." : "Sign Up"}
+                </Button>
               </div>
             </form>
 

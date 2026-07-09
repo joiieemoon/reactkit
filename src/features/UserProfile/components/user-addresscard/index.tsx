@@ -1,15 +1,31 @@
 import { useModal } from "../../../../hooks/useModal";
 import { Modal } from "../../../../components/ui/modal";
 import Button from "../../../../components/ui/button/Button";
-import Input from "../../../../components/form/input/InputField";
-import Label from "../../../../components/form/Label";
 
+import { Formik, Form } from "formik";
+import { AddressvalidationSchema } from "../../../../components/ui/input/validation";
+import { locationFields } from "../../../../components/ui/input/input-config";
+import InputField from "../../../../components/form/input/InputField";
 export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
     closeModal();
+  };
+
+  interface LocationFormValues {
+    country: string;
+    cityState: string;
+    postalCode: string;
+    taxId: string;
+  }
+
+  const initialValues: LocationFormValues = {
+    country: "India ",
+    cityState: "Ahmedabad, India .",
+    postalCode: "386525 ",
+    taxId: "AS4568384",
   };
   return (
     <>
@@ -26,7 +42,7 @@ export default function UserAddressCard() {
                   Country
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  United States.
+                  India.
                 </p>
               </div>
 
@@ -35,7 +51,7 @@ export default function UserAddressCard() {
                   City/State
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  Phoenix, Arizona, United States.
+                  Ahemdabad ,India
                 </p>
               </div>
 
@@ -44,7 +60,7 @@ export default function UserAddressCard() {
                   Postal Code
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  ERT 2489
+                  385254
                 </p>
               </div>
 
@@ -82,49 +98,90 @@ export default function UserAddressCard() {
           </button>
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
+
+      <Modal isOpen={isOpen} onClose={closeModal} size="sm">
         <div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-              Edit Address
+              Edit Location Details
             </h4>
+
             <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-              Update your details to keep your profile up-to-date.
+              Update your location information to keep your profile up-to-date.
             </p>
           </div>
-          <form className="flex flex-col">
-            <div className="px-2 overflow-y-auto custom-scrollbar">
-              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                <div>
-                  <Label>Country</Label>
-                  <Input type="text" value="United States" />
+
+          <Formik
+            initialValues={initialValues}
+            validationSchema={AddressvalidationSchema}
+            onSubmit={handleSave}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              isSubmitting,
+            }) => (
+              <Form className="flex flex-col">
+                <div className="px-2 overflow-y-auto custom-scrollbar">
+                  <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                    {locationFields.map((field) => (
+                      <div
+                        key={field.name}
+                        className={field.colSpan === 12 ? "lg:col-span-2" : ""}
+                      >
+                        <InputField
+                          name={field.name}
+                          label={
+                            <>
+                              {field.label}
+
+                              {field.required && (
+                                <span className="text-error-500"> *</span>
+                              )}
+                            </>
+                          }
+                          type={field.type}
+                          placeholder={field.placeholder}
+                          autoComplete={field.autoComplete}
+                          value={values[field.name as keyof LocationFormValues]}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          error={Boolean(
+                            touched[field.name as keyof LocationFormValues] &&
+                            errors[field.name as keyof LocationFormValues],
+                          )}
+                          errorMessage={
+                            touched[field.name as keyof LocationFormValues] &&
+                            errors[field.name as keyof LocationFormValues]
+                              ? errors[field.name as keyof LocationFormValues]
+                              : undefined
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                <div>
-                  <Label>City/State</Label>
-                  <Input type="text" value="Arizona, United States." />
-                </div>
+                <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    type="button"
+                    onClick={closeModal}
+                  >
+                    Close
+                  </Button>
 
-                <div>
-                  <Label>Postal Code</Label>
-                  <Input type="text" value="ERT 2489" />
+                  <Button size="sm" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Saving..." : "Save Changes"}
+                  </Button>
                 </div>
-
-                <div>
-                  <Label>TAX ID</Label>
-                  <Input type="text" value="AS4568384" />
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-              <Button size="sm" variant="outline" onClick={closeModal}>
-                Close
-              </Button>
-              <Button size="sm" onClick={handleSave}>
-                Save Changes
-              </Button>
-            </div>
-          </form>
+              </Form>
+            )}
+          </Formik>
         </div>
       </Modal>
     </>

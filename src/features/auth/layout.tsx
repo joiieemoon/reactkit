@@ -10,7 +10,7 @@ export default function AuthLayout() {
         <Outlet />
 
         {/* Right Side */}
-        <div className="items-center hidden w-full h-full lg:w-1/2 bg-brand-950 dark:bg-white/5 lg:grid">
+        <div className="items-center hidden w-full h-full lg:w-1/2 bg-blend-hue dark:bg-white/5 lg:grid">
           <div className="relative flex items-center justify-center z-1">
             <GridShape />
             <div className="flex flex-col items-center max-w-xs">
@@ -22,7 +22,7 @@ export default function AuthLayout() {
                   alt="Logo"
                 />
               </Link>
-              <p className="text-center text-gray-400 dark:text-white/60">
+              <p className="text-center text-[#3684EE] dark:text-[#1872f1]">
                 Free and Open-Source Tailwind CSS Admin Dashboard Template
               </p>
             </div>
