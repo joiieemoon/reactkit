@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { Link } from "react-router";
 import { ChevronLeftIcon } from "../../../../icons";
-import InputField from "../../../../components/form/input/InputField";
+import InputField from "../../../../components/form/input/input-fields/InputField.tsx";
 import Button from "../../../../components/ui/button/Button";
 import { signupFields } from "../../../../components/ui/input/input-config";
 import { signupvalidationSchema } from "../../../../components/ui/input/validation";
@@ -55,7 +55,7 @@ export default function SignUpForm() {
     <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
       <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
         <Link
-          to="/"
+          to="/dashboard"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon className="size-5" />

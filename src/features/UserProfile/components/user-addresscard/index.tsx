@@ -5,7 +5,7 @@ import Button from "../../../../components/ui/button/Button";
 import { Formik, Form } from "formik";
 import { AddressvalidationSchema } from "../../../../components/ui/input/validation";
 import { locationFields } from "../../../../components/ui/input/input-config";
-import InputField from "../../../../components/form/input/InputField";
+import InputField from "../../../../components/form/input/input-fields/InputField.tsx";
 export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {

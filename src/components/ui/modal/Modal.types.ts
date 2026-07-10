@@ -23,4 +23,7 @@ export interface ModalProps {
   closeOnEscape?: boolean;
   /** Close on outside click (default: true) */
   closeOnOutsideClick?: boolean;
+  /** Keep modal mounted in DOM when closed (default: false).
+   *  When true, modal is hidden via CSS but children retain their state. */
+  keepMounted?: boolean;
 }

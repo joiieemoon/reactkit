@@ -3,12 +3,12 @@ import type { FC } from "react";
 import { useState } from "react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { EyeCloseIcon, EyeIcon } from "../../../icons";
-import TextAreaInner from "./TextArea";
-import Checkbox from "./Checkbox";
-import Radio from "./Radio";
-import FileInput from "./FileInput";
-import MultiSelect from "../MultiSelect";
+import { EyeCloseIcon, EyeIcon } from "../../../../icons";
+import TextAreaInner from "../components/textarea/TextArea";
+import Checkbox from "../components/checkbox/Checkbox";
+import Radio from "../components/radio/Radio";
+import FileInput from "../components/file-input/FileInput";
+import MultiSelect from "../components/multi-select/MultiSelect";
 
 export interface InputFieldProps {
   type?: string;
@@ -18,8 +18,10 @@ export interface InputFieldProps {
   value?: string | number | string[];
   onChange?: (
     e:
-      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-      | { target: { value: string | number | boolean | string[] } }
+      | React.ChangeEvent<
+          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >
+      | { target: { value: string | number | boolean | string[] } },
   ) => void;
   className?: string;
   min?: string;
@@ -29,15 +31,29 @@ export interface InputFieldProps {
   success?: boolean;
   error?: boolean;
   hint?: string;
-  onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>;
-  onFocus?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>;
-  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>;
+  onBlur?: React.FocusEventHandler<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >;
+  onFocus?: React.FocusEventHandler<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >;
+  onKeyDown?: React.KeyboardEventHandler<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >;
   rows?: number;
   label?: React.ReactNode;
   errorMessage?: string;
   autoComplete?: string;
   children?: React.ReactNode;
-  as?: "input" | "textarea" | "select" | "checkbox" | "radio" | "file" | "multi-select" | string;
+  as?:
+    | "input"
+    | "textarea"
+    | "select"
+    | "checkbox"
+    | "radio"
+    | "file"
+    | "multi-select"
+    | string;
   options?: { value: string; label?: string; text?: string }[];
   checked?: boolean;
   defaultSelected?: string[];
@@ -104,7 +120,9 @@ function InputTextField({
           name={name}
           placeholder={placeholder}
           value={value as string | number}
-          onChange={onChange as (e: React.ChangeEvent<HTMLInputElement>) => void}
+          onChange={
+            onChange as (e: React.ChangeEvent<HTMLInputElement>) => void
+          }
           min={min}
           max={max}
           step={step}
@@ -175,7 +193,9 @@ function TextAreaField({
         rows={rows ?? 3}
         value={String(value ?? "")}
         onChange={(val) =>
-          onChange?.({ target: { value: val } } as unknown as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>)
+          onChange?.({ target: { value: val } } as unknown as React.ChangeEvent<
+            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+          >)
         }
         className={className}
         disabled={disabled}
@@ -197,14 +217,16 @@ function CheckboxField({
   className = "",
   disabled = false,
 }: InputFieldProps) {
-  return (  
+  return (
     <div className="relative">
       <Checkbox
         label={label as string | undefined}
         checked={checked ?? false}
         id={id}
         onChange={(val) =>
-          onChange?.({ target: { value: val } } as unknown as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>)
+          onChange?.({ target: { value: val } } as unknown as React.ChangeEvent<
+            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+          >)
         }
         className={className}
         disabled={disabled}
@@ -235,7 +257,9 @@ function RadioField({
         checked={checked ?? false}
         label={String(label ?? "")}
         onChange={(val) =>
-          onChange?.({ target: { value: val } } as unknown as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>)
+          onChange?.({ target: { value: val } } as unknown as React.ChangeEvent<
+            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+          >)
         }
         className={className}
         disabled={disabled}
@@ -333,7 +357,11 @@ function MultiSelectField({
       value={value as string[] | undefined}
       defaultSelected={defaultSelected}
       onChange={(selected) =>
-        onChange?.({ target: { value: selected } } as unknown as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>)
+        onChange?.({
+          target: { value: selected },
+        } as unknown as React.ChangeEvent<
+          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >)
       }
       disabled={disabled}
       placeholder={placeholder}
@@ -367,19 +395,20 @@ const InputField: FC<InputFieldProps> = (props) => {
   const { as = "input", type } = props;
 
   // Determine the field key for component lookup
-  const fieldKey = as === "select"
-    ? "select"
-    : as === "textarea"
-      ? "textarea"
-      : as === "checkbox" || type === "checkbox"
-        ? "checkbox"
-        : as === "radio" || type === "radio"
-          ? "radio"
-          : as === "file" || type === "file"
-            ? "file"
-            : as === "multi-select"
-              ? "multi-select"
-              : "input";
+  const fieldKey =
+    as === "select"
+      ? "select"
+      : as === "textarea"
+        ? "textarea"
+        : as === "checkbox" || type === "checkbox"
+          ? "checkbox"
+          : as === "radio" || type === "radio"
+            ? "radio"
+            : as === "file" || type === "file"
+              ? "file"
+              : as === "multi-select"
+                ? "multi-select"
+                : "input";
 
   const Component = fieldComponents[fieldKey];
 

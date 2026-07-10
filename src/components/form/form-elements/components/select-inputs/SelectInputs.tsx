@@ -1,9 +1,9 @@
 import { useState } from "react";
-import ComponentCard from "../../common/ComponentCard";
-import Label from "../Label";
-import Select from "../Select";
-import MultiSelect from "../MultiSelect";
 
+import ComponentCard from "../../../../common/ComponentCard";
+import Label from "../../../input/components/label/Label";
+import Select from "../../../input/components/select/Select";
+import MultiSelect from "../../../input/components/multi-select/MultiSelect";
 export default function SelectInputs() {
   const options = [
     { value: "marketing", label: "Marketing" },

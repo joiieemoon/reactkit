@@ -7,7 +7,7 @@ import {
   socialFields,
 } from "../../../../components/ui/input/input-config";
 import { profileValidationSchema } from "../../../../components/ui/input/validation";
-import InputField from "../../../../components/form/input/InputField";
+import InputField from "../../../../components/form/input/input-fields/InputField.tsx";
 export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {
@@ -57,7 +57,7 @@ export default function UserMetaCard() {
                 </p>
                 <div className="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Ahemdabd, India 
+                  Ahemdabd, India
                 </p>
               </div>
             </div>

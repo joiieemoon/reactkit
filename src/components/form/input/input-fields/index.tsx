@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import type { InputProps } from "../../../ui/input/types";
-import InputField, { type InputFieldProps } from "../InputField";
+import InputField, { type InputFieldProps } from "./InputField.tsx";
 
 /**
  * Lightweight passthrough component that maps InputProps to InputField.

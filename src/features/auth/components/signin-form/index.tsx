@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { Link } from "react-router";
 import { ChevronLeftIcon } from "../../../../icons";
-import InputField from "../../../../components/form/input/InputField";
+import InputField from "../../../../components/form/input/input-fields/InputField.tsx";
 import Button from "../../../../components/ui/button/Button";
 import { loginvalidationSchema } from "../../../../components/ui/input/validation";
 import { login } from "../../../../services/auth";
@@ -46,7 +46,7 @@ export default function SignInForm() {
     <div className="flex flex-col flex-1">
       <div className="w-full max-w-md pt-10 mx-auto">
         <Link
-          to="/"
+          to="/dashboard"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon className="size-5" />

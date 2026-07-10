@@ -1,8 +1,8 @@
-import ComponentCard from "../../common/ComponentCard";
-import Label from "../Label";
-import Input from "../input/InputField";
-import { EnvelopeIcon } from "../../../icons";
-import PhoneInput from "../group-input/PhoneInput";
+import ComponentCard from "../../../../common/ComponentCard.tsx";
+import Label from "../../../input/components/label/Label.tsx";
+import Input from "../../../input/input-fields/InputField.tsx";
+import { EnvelopeIcon } from "../../../../../icons/index.ts";
+import PhoneInput from "../../../group-input/PhoneInput.tsx";
 
 export default function InputGroup() {
   const countries = [

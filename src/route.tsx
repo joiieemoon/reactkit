@@ -27,9 +27,18 @@ const BasicTables = lazy(() => import("./features/auth/Tables/BasicTables"));
 export const router = createBrowserRouter([
   {
     path: "/",
+    element: <AuthLayout />,
+    children: [
+      { index: true, element: <SignIn /> },
+      { path: "signin", element: <SignIn /> },
+      { path: "signup", element: <SignUp /> },
+    ],
+  },
+  {
+    path: "/",
     element: <AppLayout />,
     children: [
-      { index: true, element: <Home /> },
+      { path: "dashboard", element: <Home /> },
 
       // Profile
       { path: "profile", element: <UserProfiles /> },
@@ -39,14 +48,6 @@ export const router = createBrowserRouter([
 
       // Tables
       { path: "basic-tables", element: <BasicTables /> },
-    ],
-  },
-  {
-    path: "/",
-    element: <AuthLayout />,
-    children: [
-      { path: "signin", element: <SignIn /> },
-      { path: "signup", element: <SignUp /> },
     ],
   },
   {
