@@ -3,7 +3,7 @@ import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import flatpickr from "flatpickr";
 
-import ChartTab from "../../../../components/common/ChartTab";
+import ChartTab from "../../../../components/common/chart-tab/ChartTab";
 
 import { CalenderIcon } from "../../../../icons";
 

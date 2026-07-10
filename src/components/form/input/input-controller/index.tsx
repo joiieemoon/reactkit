@@ -1,4 +1,4 @@
-import type { InputControllerProps } from "../../../ui/input/types";
+import type { InputControllerProps } from "../types";
 import React from "react";
 
 import Input from "../input-fields";

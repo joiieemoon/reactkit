@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import type { InputProps } from "../../../ui/input/types";
+import type { InputProps } from "../types/index.ts";
 import InputField, { type InputFieldProps } from "./InputField.tsx";
 
 /**

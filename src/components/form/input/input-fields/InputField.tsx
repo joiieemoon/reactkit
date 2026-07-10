@@ -172,14 +172,17 @@ function InputTextField({
  */
 function TextAreaField({
   label,
+  name,
   placeholder,
   rows,
   value,
   onChange,
+  onBlur,
   className = "",
   disabled = false,
   error = false,
   hint = "",
+  errorMessage,
 }: InputFieldProps) {
   return (
     <div className="relative">
@@ -189,19 +192,24 @@ function TextAreaField({
         </label>
       )}
       <TextAreaInner
+        name={name}
         placeholder={placeholder}
         rows={rows ?? 3}
         value={String(value ?? "")}
         onChange={(val) =>
-          onChange?.({ target: { value: val } } as unknown as React.ChangeEvent<
+          onChange?.({ target: { name, value: val } } as unknown as React.ChangeEvent<
             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
           >)
         }
+        onBlur={onBlur}
         className={className}
         disabled={disabled}
         error={error}
         hint={hint}
       />
+      {error && errorMessage && (
+        <p className="mt-1 text-xs text-red-500">{errorMessage}</p>
+      )}
     </div>
   );
 }
@@ -398,7 +406,7 @@ const InputField: FC<InputFieldProps> = (props) => {
   const fieldKey =
     as === "select"
       ? "select"
-      : as === "textarea"
+      : as === "textarea" || type === "textarea"
         ? "textarea"
         : as === "checkbox" || type === "checkbox"
           ? "checkbox"

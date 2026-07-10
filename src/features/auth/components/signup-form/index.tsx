@@ -3,8 +3,9 @@ import { Link } from "react-router";
 import { ChevronLeftIcon } from "../../../../icons";
 import InputField from "../../../../components/form/input/input-fields/InputField.tsx";
 import Button from "../../../../components/ui/button/Button";
-import { signupFields } from "../../../../components/ui/input/input-config";
-import { signupvalidationSchema } from "../../../../components/ui/input/validation";
+import { signupFields } from "../../../../components/form/input/input-config/index.ts";
+
+import { signupvalidationSchema } from "../../../../components/form/input/validation/index.ts";
 import { signup } from "../../../../services/auth";
 
 interface SignUpFormValues {
@@ -167,6 +168,7 @@ export default function SignUpForm() {
                 </div>
 
                 <Button
+                  type="submit"
                   className="w-full"
                   size="sm"
                   disabled={!isValid || isSubmitting}

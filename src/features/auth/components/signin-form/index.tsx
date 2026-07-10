@@ -3,9 +3,9 @@ import { Link } from "react-router";
 import { ChevronLeftIcon } from "../../../../icons";
 import InputField from "../../../../components/form/input/input-fields/InputField.tsx";
 import Button from "../../../../components/ui/button/Button";
-import { loginvalidationSchema } from "../../../../components/ui/input/validation";
+import { loginvalidationSchema } from "../../../../components/form/input/validation/index.ts";
 import { login } from "../../../../services/auth";
-import { loginFields } from "../../../../components/ui/input/input-config";
+import { loginFields } from "../../../../components/form/input/input-config/index.ts";
 
 interface SignInFormValues {
   email: string;
@@ -165,6 +165,7 @@ export default function SignInForm() {
                 </div>
 
                 <Button
+                  type="submit"
                   className="w-full"
                   size="sm"
                   disabled={!isValid || isSubmitting}

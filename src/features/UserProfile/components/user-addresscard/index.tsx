@@ -1,11 +1,12 @@
 import { useModal } from "../../../../hooks/useModal";
-import { Modal } from "../../../../components/ui/modal";
+import { Modal } from "../../../../components/common/modal";
 import Button from "../../../../components/ui/button/Button";
 
 import { Formik, Form } from "formik";
-import { AddressvalidationSchema } from "../../../../components/ui/input/validation";
-import { locationFields } from "../../../../components/ui/input/input-config";
-import InputField from "../../../../components/form/input/input-fields/InputField.tsx";
+
+import { locationFields } from "../../../../components/form/input/input-config";
+// import InputField from "../../../../components/form/input/InputField";
+import InputField from "../../../../components/form/input/input-fields/InputField";
 export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {
@@ -111,11 +112,7 @@ export default function UserAddressCard() {
             </p>
           </div>
 
-          <Formik
-            initialValues={initialValues}
-            validationSchema={AddressvalidationSchema}
-            onSubmit={handleSave}
-          >
+          <Formik initialValues={initialValues} onSubmit={handleSave}>
             {({
               values,
               errors,
@@ -166,16 +163,15 @@ export default function UserAddressCard() {
                 </div>
 
                 <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                  <Button
-                    size="sm"
-                    variant="outline"
+                  <button
                     type="button"
                     onClick={closeModal}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 flex-1"
                   >
                     Close
-                  </Button>
+                  </button>
 
-                  <Button size="sm" type="submit" disabled={isSubmitting}>
+                  <Button type="submit" size="sm" disabled={isSubmitting}>
                     {isSubmitting ? "Saving..." : "Save Changes"}
                   </Button>
                 </div>

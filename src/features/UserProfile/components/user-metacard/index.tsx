@@ -1,20 +1,16 @@
 import { useModal } from "../../../../hooks/useModal";
-import { Modal } from "../../../../components/ui/modal";
+
+import { Modal } from "../../../../components/common/modal";
 import Button from "../../../../components/ui/button/Button";
 import { Formik, Form } from "formik";
 import {
   personalFields,
   socialFields,
-} from "../../../../components/ui/input/input-config";
-import { profileValidationSchema } from "../../../../components/ui/input/validation";
-import InputField from "../../../../components/form/input/input-fields/InputField.tsx";
+} from "../../../../components/form/input/input-config";
+import { profileValidationSchema } from "../../../../components/form/input/validation";
+import InputField from "../../../../components/form/input/input-fields/InputField";
 export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
-  };
   interface PersonalInfoFormValues {
     facebook: string;
     twitter: string;
@@ -170,7 +166,12 @@ export default function UserMetaCard() {
           </button>
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
+      <Modal
+        isOpen={isOpen}
+        onClose={closeModal}
+        className="max-w-[700px] m-4"
+        keepMounted={true}
+      >
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
@@ -224,6 +225,7 @@ export default function UserMetaCard() {
                           <InputField
                             name={field.name}
                             label={field.label}
+                            as={field.as}
                             type={field.type}
                             placeholder={field.placeholder}
                             value={
@@ -281,6 +283,7 @@ export default function UserMetaCard() {
                                 )}
                               </>
                             }
+                            as={field.as}
                             type={field.type}
                             placeholder={field.placeholder}
                             value={
@@ -314,16 +317,15 @@ export default function UserMetaCard() {
                 </div>
 
                 <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                  <Button
-                    size="sm"
-                    variant="outline"
+                  <button
                     type="button"
                     onClick={closeModal}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 w-3 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 flex-1"
                   >
                     Close
-                  </Button>
+                  </button>
 
-                  <Button size="sm" type="submit" disabled={isSubmitting}>
+                  <Button type="submit" size="sm" disabled={isSubmitting}>
                     {isSubmitting ? "Saving..." : "Save Changes"}
                   </Button>
                 </div>

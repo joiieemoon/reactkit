@@ -3,10 +3,9 @@ import MonthlySalesChart from "./components/monthly-saleschart";
 
 import StatisticsChart from "./components/statistics-chart";
 import MonthlyTarget from "./components/monthly-target";
-import RecentOrders from "./components/recent-orders";
 
-import PageMeta from "../../components/common/PageMeta";
-import ModalTest from "../../components/ui/confirmation-modal/Testdelete";
+import PageMeta from "../../components/common/pagemeta/PageMeta";
+// import RecentOrders from "./components/recent-orders";
 
 export default function Home() {
   return (
@@ -29,11 +28,9 @@ export default function Home() {
         <div className="col-span-12">
           <StatisticsChart />
         </div>
-
-        <div className="col-span-12 ">
+        {/* <div className="col-span-12">
           <RecentOrders />
-        </div>
-       
+        </div> */}
       </div>
     </>
   );

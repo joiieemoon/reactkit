@@ -1,4 +1,4 @@
-import ModalTest from "../../../../components/ui/confirmation-modal/Testdelete";
+
 
 export default function UserInfoCard() {
   return (
@@ -59,7 +59,7 @@ export default function UserInfoCard() {
           </div>
         </div>
       </div>
-      <ModalTest />
+   
     </>
   );
 }

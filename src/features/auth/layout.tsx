@@ -1,6 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
-import GridShape from "../../components/common/GridShape";
-import ThemeTogglerTwo from "../../components/common/ThemeTogglerTwo";
+import GridShape from "../../components/common/grid-shape/GridShape";
+import ThemeTogglerTwo from "../../components/common/theme-toggler-two/ThemeTogglerTwo";
 
 export default function AuthLayout() {
   return (

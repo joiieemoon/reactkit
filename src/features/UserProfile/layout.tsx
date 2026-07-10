@@ -1,8 +1,8 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
+import PageBreadcrumb from "../../components/common/pagebread-crumb/PageBreadCrumb";
 import UserMetaCard from "./components/user-metacard";
 import UserInfoCard from "./components/user-infocard";
 import UserAddressCard from "./components/user-addresscard";
-import PageMeta from "../../components/common/PageMeta";
+import PageMeta from "../../components/common/pagemeta/PageMeta";
 
 export default function UserProfiles() {
   return (

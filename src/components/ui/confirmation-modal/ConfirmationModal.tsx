@@ -1,7 +1,10 @@
 import type { FC, ReactElement } from "react";
 import { useCallback } from "react";
-import { Modal } from "../modal/Modal";
-import type { ConfirmationModalProps, ConfirmVariant } from "./ConfirmationModal.types";
+import { Modal } from "../../common/modal/Modal";
+import type {
+  ConfirmationModalProps,
+  ConfirmVariant,
+} from "./ConfirmationModal.types";
 
 interface VariantConfig {
   icon: (className: string) => ReactElement;
@@ -11,7 +14,12 @@ interface VariantConfig {
 
 function CheckIcon(className: string) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M5 13l4 4L19 7"
         stroke="currentColor"
@@ -25,7 +33,12 @@ function CheckIcon(className: string) {
 
 function WarningIcon(className: string) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
         stroke="currentColor"
@@ -39,7 +52,12 @@ function WarningIcon(className: string) {
 
 function InfoIcon(className: string) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
         stroke="currentColor"
@@ -53,7 +71,12 @@ function InfoIcon(className: string) {
 
 function DeleteIcon(className: string) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
         stroke="currentColor"

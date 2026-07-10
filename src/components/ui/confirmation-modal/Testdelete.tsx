@@ -45,11 +45,11 @@ export default function ModalTest() {
       <DeleteConfirmationModal
         isOpen={openDelete}
         onClose={() => setOpenDelete(false)}
-        recordName="User Profile"
-        onDelete={async () => {
-          console.log("Deleted");
-          setOpenDelete(false);
-        }}
+        // recordName="User Profile"
+        // onDelete={async () => {
+        //   console.log("Deleted");
+        //   setOpenDelete(false);
+        // }}
       />
     </div>
   );

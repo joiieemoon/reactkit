@@ -1,17 +1,18 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import DefaultInputs from "../../components/form/form-elements/components/default-inputs/DefaultInputs";
-import InputGroup from "../../components/form/form-elements/components/input-group/InputGroup";
-import DropzoneComponent from "../../components/form/form-elements/components/drop-zone";
-import CheckboxComponents from "../../components/form/form-elements/components/chechbox-components/CheckboxComponents";
-import RadioButtons from "../../components/form/form-elements/components/radio-buttons/RadioButtons";
-import ToggleSwitch from "../../components/form/form-elements/components/toggle-switch/ToggleSwitch";
-import FileInputExample from "../../components/form/form-elements/components/fileinput-example/FileInputExample";
+import PageBreadcrumb from "../../components/common/pagebread-crumb/PageBreadCrumb";
+import DefaultInputs from "./components/default-inputs/DefaultInputs";
+import InputGroup from "./components/input-group/InputGroup";
+import DropzoneComponent from "./components/drop-zone";
+import CheckboxComponents from "./components/chechbox-components";
 
-import SelectInputs from "../../components/form/form-elements/components/select-inputs/SelectInputs";
-import TextAreaInput from "../../components/form/form-elements/components/textarea-input/TextAreaInput";
+import RadioButtons from "./components/radio-buttons/RadioButtons";
+import ToggleSwitch from "./components/toggle-switch/ToggleSwitch";
+import FileInputExample from "./components/fileinput-example/FileInputExample";
 
-import InputStates from "../../components/form/form-elements/components/input-states/InputStates";
-import PageMeta from "../../components/common/PageMeta";
+import SelectInputs from "./components/select-inputs/SelectInputs";
+import TextAreaInput from "./components/textarea-input/TextAreaInput";
+
+import InputStates from "./components/input-states/InputStates";
+import PageMeta from "../../components/common/pagemeta/PageMeta";
 
 export default function FormElements() {
   return (
