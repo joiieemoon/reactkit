@@ -1,6 +1,5 @@
-import { useModal } from "../../../../hooks/useModal";
-
-import { Modal } from "../../../../components/common/modal";
+  import { useModal } from "../../../../hooks/useModal";
+import { Modal } from "../../../../components/common/modal/Modal";
 import Button from "../../../../components/ui/button/Button";
 import { Formik, Form } from "formik";
 import {
@@ -9,20 +8,23 @@ import {
 } from "../../../../components/form/input/input-config";
 import { profileValidationSchema } from "../../../../components/form/input/validation";
 import InputField from "../../../../components/form/input/input-fields/InputField";
+import { toastSuccess } from "../../../../components/common/toast/toast";
+
 export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();
+
   interface PersonalInfoFormValues {
     facebook: string;
     twitter: string;
     linkedin: string;
     instagram: string;
-
     firstName: string;
     lastName: string;
     email: string;
     phone: string;
     bio: string;
   }
+
   const initialProfileValues: PersonalInfoFormValues = {
     facebook: "https://www.facebook.com/joieeedev",
     twitter: "https://x.com/joieeedev",
@@ -190,10 +192,8 @@ export default function UserMetaCard() {
             onSubmit={(values, { setSubmitting }) => {
               try {
                 console.log("Profile Data:", values);
-
-                // Dummy save
                 localStorage.setItem("profile", JSON.stringify(values));
-
+                toastSuccess("Profile updated successfully!");
                 closeModal();
               } catch (error) {
                 console.error("Failed to update profile", error);
@@ -213,7 +213,6 @@ export default function UserMetaCard() {
               <Form className="flex flex-col">
                 <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
                   {/* Social Links */}
-
                   <div>
                     <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                       Social Links
@@ -225,7 +224,6 @@ export default function UserMetaCard() {
                           <InputField
                             name={field.name}
                             label={field.label}
-                            as={field.as}
                             type={field.type}
                             placeholder={field.placeholder}
                             value={
@@ -258,7 +256,6 @@ export default function UserMetaCard() {
                   </div>
 
                   {/* Personal Information */}
-
                   <div className="mt-7">
                     <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                       Personal Information
@@ -277,13 +274,11 @@ export default function UserMetaCard() {
                             label={
                               <>
                                 {field.label}
-
                                 {field.required && (
                                   <span className="text-error-500"> *</span>
                                 )}
                               </>
                             }
-                            as={field.as}
                             type={field.type}
                             placeholder={field.placeholder}
                             value={
@@ -320,12 +315,12 @@ export default function UserMetaCard() {
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 w-3 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 flex-1"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 flex-1"
                   >
                     Close
                   </button>
 
-                  <Button type="submit" size="sm" disabled={isSubmitting}>
+                  <Button size="sm" disabled={isSubmitting}>
                     {isSubmitting ? "Saving..." : "Save Changes"}
                   </Button>
                 </div>

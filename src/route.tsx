@@ -22,7 +22,7 @@ const UserProfiles = lazy(() => import("./features/UserProfile/layout"));
 const FormElements = lazy(() => import("./features/Forms/FormElements"));
 
 // Tables
-const BasicTables = lazy(() => import("./features/auth/Tables/BasicTables"));
+const BasicTables = lazy(() => import("./features/Tables/BasicTables"));
 
 export const router = createBrowserRouter([
   {

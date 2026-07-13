@@ -5,15 +5,21 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Badge from "../../ui/badge/Badge";
 import Pagination from "../../common/pagination";
 import { TrashBinIcon } from "../../../icons";
-// import { DeleteConfirmationModal } from "../../../ui/confirmation-modal";
 import { DeleteConfirmationModal } from "../../ui/confirmation-modal";
 import { SearchInput } from "../../ui/search-input";
+import { useSearch } from "../../../hooks/useSearch";
+import { usePagination } from "../../../hooks/usePagination";
+import { sortData } from "../../../utils/sortData";
+import { EmptyState } from "../../common/empty-state";
+import { TableLoader } from "../../common/table-loader";
+import type { SortConfig } from "../../../types/table.types";
 
 interface Order {
+  [key: string]: unknown;
   id: number;
   user: {
     image: string;
@@ -21,12 +27,10 @@ interface Order {
     role: string;
   };
   projectName: string;
-
   status: string;
   budget: string;
 }
 
-// Define the table data using the interface
 const tableData: Order[] = [
   {
     id: 1,
@@ -119,39 +123,80 @@ const tableData: Order[] = [
 ];
 
 export default function BasicTableOne() {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const totalItems = 10;
-  const totalPages = Math.ceil(totalItems / pageSize);
+  const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
+  const [isLoading] = useState(false);
 
-  const openDelete = (id: number) => {
+  // Search
+  const { search, setSearch, filteredData } = useSearch<Order>({
+    data: tableData,
+    searchKeys: ["user.name", "user.role", "projectName", "status", "budget"],
+    debounceDelay: 300,
+  });
+
+  // Sorting
+  const sortedData = useMemo(() => {
+    if (!sortConfig) return filteredData;
+    return sortData(filteredData, sortConfig);
+  }, [filteredData, sortConfig]);
+
+  // Pagination
+  const {
+    page,
+    pageSize,
+    setPage,
+    changePageSize,
+    currentData,
+    totalPages,
+    totalItems,
+  } = usePagination(sortedData, { initialPage: 1, initialPageSize: 10 });
+
+  const openDelete = useCallback((id: number) => {
     setDeleteId(id);
     setIsDeleteOpen(true);
-  };
+  }, []);
 
-  const closeDelete = () => {
+  const closeDelete = useCallback(() => {
     setIsDeleteOpen(false);
     setDeleteId(null);
-  };
+  }, []);
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     if (deleteId === null) return;
     setIsDeleting(true);
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log("Deleted order:", deleteId);
     setIsDeleting(false);
     closeDelete();
+  }, [deleteId, closeDelete]);
+
+  const toggleSort = useCallback((field: string) => {
+    setSortConfig((prev) => {
+      if (prev?.field === field) {
+        return prev.direction === "asc"
+          ? { field, direction: "desc" }
+          : null;
+      }
+      return { field, direction: "asc" };
+    });
+  }, []);
+
+  const getSortIndicator = (field: string) => {
+    if (sortConfig?.field !== field) return null;
+    return sortConfig.direction === "asc" ? " ▲" : " ▼";
   };
 
   return (
     <>
       <div className="flex items-center justify-between mb-4">
-        <SearchInput placeholder="Search orders..." className="max-w-sm" />
-
+        <SearchInput
+          placeholder="Search orders..."
+          className="max-w-sm"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
           <svg
             className="stroke-current fill-white dark:fill-gray-800"
@@ -197,36 +242,30 @@ export default function BasicTableOne() {
             {/* Table Header */}
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                <th
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
+                  onClick={() => toggleSort("user.name")}
                 >
-                  User
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  User{getSortIndicator("user.name")}
+                </th>
+                <th
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
+                  onClick={() => toggleSort("projectName")}
                 >
-                  Project Name
-                </TableCell>
-                {/* <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                Team
-              </TableCell> */}
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  Project Name{getSortIndicator("projectName")}
+                </th>
+                <th
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
+                  onClick={() => toggleSort("status")}
                 >
-                  Status
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  Status{getSortIndicator("status")}
+                </th>
+                <th
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
+                  onClick={() => toggleSort("budget")}
                 >
-                  Budget
-                </TableCell>
+                  Budget{getSortIndicator("budget")}
+                </th>
                 <TableCell
                   isHeader
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -238,94 +277,90 @@ export default function BasicTableOne() {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {tableData.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell className="px-5 py-4 sm:px-6 text-start">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 overflow-hidden rounded-full">
-                        <img
-                          width={40}
-                          height={40}
-                          src={order.user.image}
-                          alt={order.user.name}
-                        />
-                      </div>
-                      <div>
-                        <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {order.user.name}
-                        </span>
-                        <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                          {order.user.role}
-                        </span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {order.projectName}
-                  </TableCell>
-                  {/* <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  <div className="flex -space-x-2">
-                    {order.team.images.map((teamImage, index) => (
-                      <div
-                        key={index}
-                        className="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                      >
-                        <img
-                          width={24}
-                          height={24}
-                          src={teamImage}
-                          alt={`Team member ${index + 1}`}
-                          className="w-full size-6"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </TableCell> */}
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    <Badge
-                      size="sm"
-                      color={
-                        order.status === "Active"
-                          ? "success"
-                          : order.status === "Pending"
-                            ? "warning"
-                            : "error"
+              {isLoading ? (
+                <TableLoader rows={5} columns={5} avatar actions />
+              ) : currentData.length === 0 ? (
+                <TableRow>
+                  <td colSpan={5} className="px-0 py-0">
+                    <EmptyState
+                      title="No results found"
+                      description={
+                        search
+                          ? `No orders match "${search}". Try a different search term.`
+                          : "There are no orders to display at the moment."
                       }
-                    >
-                      {order.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {order.budget}
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    <button
-                      onClick={() => openDelete(order.id)}
-                      className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 hover:text-error-500 transition-colors"
-                    >
-                      <TrashBinIcon className="w-5 h-5" />
-                    </button>
-                  </TableCell>
+                    />
+                  </td>
                 </TableRow>
-              ))}
+              ) : (
+                currentData.map((order) => (
+                  <TableRow key={order.id}>
+                    <TableCell className="px-5 py-4 sm:px-6 text-start">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 overflow-hidden rounded-full">
+                          <img
+                            width={40}
+                            height={40}
+                            src={order.user.image}
+                            alt={order.user.name}
+                          />
+                        </div>
+                        <div>
+                          <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                            {order.user.name}
+                          </span>
+                          <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
+                            {order.user.role}
+                          </span>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                      {order.projectName}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                      <Badge
+                        size="sm"
+                        color={
+                          order.status === "Active"
+                            ? "success"
+                            : order.status === "Pending"
+                              ? "warning"
+                              : "error"
+                        }
+                      >                                                                                 
+                        {order.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                      {order.budget}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                      <button
+                        onClick={() => openDelete(order.id)}
+                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 hover:text-error-500 transition-colors"
+                      >
+                        <TrashBinIcon className="w-5 h-5" />
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
       </div>
 
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        pageSize={pageSize}
-        totalItems={totalItems}
-        onPageChange={setPage}
-        onPageSizeChange={(size) => {
-          setPageSize(size);
-
-          // Usually reset to first page when page size changes
-          setPage(1);
-        }}
-      />
+      {!isLoading && currentData.length > 0 && (
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          totalItems={totalItems}
+          onPageChange={setPage}
+          onPageSizeChange={changePageSize}
+        />
+      )}
 
       <DeleteConfirmationModal
         isOpen={isDeleteOpen}

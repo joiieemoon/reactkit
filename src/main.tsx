@@ -8,12 +8,15 @@ import { AppWrapper } from "./components/common/pagemeta/PageMeta.tsx";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./route";
+import ToastProvider from "./components/common/toast/ToastProvider.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
-      <AppWrapper>
-        <RouterProvider router={router} />
-      </AppWrapper>
+      <ToastProvider>
+        <AppWrapper>
+          <RouterProvider router={router} />
+        </AppWrapper>
+      </ToastProvider>
     </ThemeProvider>
   </StrictMode>,
 );

@@ -7,13 +7,9 @@ import { Formik, Form } from "formik";
 import { locationFields } from "../../../../components/form/input/input-config";
 // import InputField from "../../../../components/form/input/InputField";
 import InputField from "../../../../components/form/input/input-fields/InputField";
+import { toastSuccess } from "../../../../components/common/toast/toast";
 export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
-  };
 
   interface LocationFormValues {
     country: string;
@@ -112,7 +108,15 @@ export default function UserAddressCard() {
             </p>
           </div>
 
-          <Formik initialValues={initialValues} onSubmit={handleSave}>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={(values, { setSubmitting }) => {
+              console.log("Address Data:", values);
+              toastSuccess("Address updated successfully!");
+              setSubmitting(false);
+              closeModal();
+            }}
+          >
             {({
               values,
               errors,
