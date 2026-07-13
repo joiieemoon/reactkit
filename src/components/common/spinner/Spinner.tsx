@@ -23,14 +23,14 @@ const sizeMap: Record<string, { width: string; height: string; border: string }>
  */
 export const Spinner: FC<SpinnerProps> = ({
   size = "md",
-  color = "border-brand-500",
+  color = "border-t-blue-400",
   className = "",
 }) => {
   const { width, height, border } = sizeMap[size];
 
   return (
     <div
-      className={`${width} ${height} ${border} border-gray-200 dark:border-gray-700 ${color} rounded-full animate-spin ${className}`}
+      className={`${width} ${height} ${border} border-2 border-gray-100 dark:border-blue-700 ${color} rounded-full animate-spin ${className}`}
       role="status"
       aria-label="loading"
     >

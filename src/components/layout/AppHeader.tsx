@@ -85,7 +85,7 @@ const AppHeader: React.FC = () => {
           </button>
 
           <Link to="/" className="lg:hidden">
-            <img
+            <img  
               className="dark:hidden"
               src="/images/logo/auth-logo.svg"
               // src="./images/logo/auth-logo.svg"

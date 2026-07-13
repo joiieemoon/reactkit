@@ -12,11 +12,13 @@ import ToastProvider from "./components/common/toast/ToastProvider.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
-      <ToastProvider>
-        <AppWrapper>
-          <RouterProvider router={router} />
-        </AppWrapper>
-      </ToastProvider>
+
+        <ToastProvider>
+          <AppWrapper>
+            <RouterProvider router={router} />
+          </AppWrapper>
+        </ToastProvider>
+    
     </ThemeProvider>
   </StrictMode>,
 );

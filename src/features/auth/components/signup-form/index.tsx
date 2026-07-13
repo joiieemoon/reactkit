@@ -6,7 +6,10 @@ import Button from "../../../../components/ui/button/Button";
 import { signupFields } from "../../../../components/form/input/input-config/index.ts";
 import { signupvalidationSchema } from "../../../../components/form/input/validation/index.ts";
 import { signup } from "../../../../services/auth";
-import { toastSuccess, toastError } from "../../../../components/common/toast/toast.ts";
+import {
+  toastSuccess,
+  toastError,
+} from "../../../../components/common/toast/toast.ts";
 import PageMeta from "../../../../components/common/pagemeta/PageMeta";
 
 interface SignUpFormValues {
