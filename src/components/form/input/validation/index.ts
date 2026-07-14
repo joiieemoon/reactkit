@@ -5,15 +5,16 @@ import 'yup-phone-lite';
 
 const letterRegx = /^[A-Za-z]+$/;
 export const loginvalidationSchema = yup.object().shape({
-    email: yup.string().email(errorMessage.email).required(errorMessage.email),
+    // email: yup.string().email(errorMessage.email).required(errorMessage.email),
+    
     password: yup
         .string()
         .required(errorMessage.required)
-        .min(8, errorMessage.passwordMin)
-        .matches(/[A-Z]/, errorMessage.passwordUpper)
-        .matches(/[a-z]/, errorMessage.passwordLower)
-        .matches(/[0-9]/, errorMessage.passwordNumber)
-        .matches(/[@$!%*?&]/, errorMessage.passwordSpecial),
+        .min(4, errorMessage.passwordMin),
+    // .matches(/[A-Z]/, errorMessage.passwordUpper)
+    // .matches(/[a-z]/, errorMessage.passwordLower)
+    // .matches(/[0-9]/, errorMessage.passwordNumber)
+    // .matches(/[@$!%*?&]/, errorMessage.passwordSpecial),
 })
 export const signupvalidationSchema = yup.object().shape({
 
@@ -23,11 +24,11 @@ export const signupvalidationSchema = yup.object().shape({
     password: yup
         .string()
         .required(errorMessage.required)
-        .min(8, errorMessage.passwordMin)
-        .matches(/[A-Z]/, errorMessage.passwordUpper)
-        .matches(/[a-z]/, errorMessage.passwordLower)
-        .matches(/[0-9]/, errorMessage.passwordNumber)
-        .matches(/[@$!%*?&]/, errorMessage.passwordSpecial),
+        .min(4, errorMessage.passwordMin)
+        // .matches(/[A-Z]/, errorMessage.passwordUpper)
+        .matches(/[a-z]/, errorMessage.passwordLower),
+    // .matches(/[0-9]/, errorMessage.passwordNumber),
+    // .matches(/[@$!%*?&]/, errorMessage.passwordSpecial),
     cpassword: yup
         .string()
         .required(errorMessage.required)

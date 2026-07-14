@@ -88,7 +88,7 @@ export const locationFields = [
 ];
 export const loginFields: FormField[] = [
     {
-        name: "email",
+        name: "username",
         label: "Email",
         type: "text",
         placeholder: "name@yopmail.com",

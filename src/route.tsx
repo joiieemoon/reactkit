@@ -1,17 +1,20 @@
 import { createBrowserRouter } from "react-router-dom";
 import { lazy } from "react";
-
+// import { PublicRoute, ProtectedRoute } from "./components/common/routes";
+// import { PublicRoute, ProtectedRoute } from "./components/common/routes";
+import { PublicRoute } from "./components/common/routes";
+import {ProtectedRoute }from "./components/common/routes";
 // Layouts
 const AppLayout = lazy(() => import("./components/layout/AppLayout"));
 
-//auth
-const AuthLayout = lazy(() => import("./features/auth/layout"));
+// Auth
+const AuthLayout = lazy(() => import("./features/auth"));
+
 // Dashboard
 const Home = lazy(() => import("./features/Dashboard/Home"));
 
 // Auth Pages
 const SignIn = lazy(() => import("./features/auth/components/signin-form"));
-
 const SignUp = lazy(() => import("./features/auth/components/signup-form"));
 
 // Other Pages
@@ -27,7 +30,11 @@ const BasicTables = lazy(() => import("./features/Tables/BasicTables"));
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <AuthLayout />,
+    element: (
+      <PublicRoute>
+        <AuthLayout />
+      </PublicRoute>
+    ),
     children: [
       { index: true, element: <SignIn /> },
       { path: "signin", element: <SignIn /> },
@@ -36,7 +43,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <AppLayout />,
+    element: (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { path: "dashboard", element: <Home /> },
 

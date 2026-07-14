@@ -151,7 +151,7 @@ export default function BasicTableOne() {
     currentData,
     totalPages,
     totalItems,
-  } = usePagination(sortedData, { initialPage: 1, initialPageSize: 10 });
+  } = usePagination(sortedData, { initialPage: 1, initialPageSize: 5 });
 
   const openDelete = useCallback((id: number) => {
     setDeleteId(id);

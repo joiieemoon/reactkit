@@ -1,16 +1,16 @@
 import { useFormik } from "formik";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { ChevronLeftIcon } from "../../../../icons";
 import InputField from "../../../../components/form/input/input-fields/InputField.tsx";
 import Button from "../../../../components/ui/button/Button";
 import { signupFields } from "../../../../components/form/input/input-config/index.ts";
 import { signupvalidationSchema } from "../../../../components/form/input/validation/index.ts";
-import { signup } from "../../../../services/auth";
 import {
   toastSuccess,
   toastError,
 } from "../../../../components/common/toast/toast.ts";
 import PageMeta from "../../../../components/common/pagemeta/PageMeta";
+import { useSignup } from "../../../../api/hooks";
 
 interface SignUpFormValues {
   [key: string]: string;
@@ -26,7 +26,16 @@ function buildInitialValues(): SignUpFormValues {
 }
 
 export default function SignUpForm() {
-  const navigate = useNavigate();
+  const { mutate: signup, isPending } = useSignup({
+    onSuccessRedirect: "/dashboard",
+    onSuccess: () => {
+      toastSuccess("Account created successfully!");
+    },
+    onError: (error) => {
+      toastError(error.message || "Signup failed");
+    },
+  });
+
   const formik = useFormik<SignUpFormValues>({
     initialValues: buildInitialValues(),
     validationSchema: signupvalidationSchema.pick(
@@ -34,19 +43,14 @@ export default function SignUpForm() {
         typeof signupvalidationSchema.pick
       >[0],
     ),
-    onSubmit: async (values, { setSubmitting, setFieldError }) => {
-      try {
-        const result = await signup(values);
-        if (result.success) {
-          toastSuccess("Account created successfully!");
-          navigate("/dashboard");
-        } else {
-          setFieldError("email", result.message);
-          toastError(result.message);
-        }
-      } finally {
-        setSubmitting(false);
-      }
+    onSubmit: (values) => {
+      signup({
+        email: values.email,
+        password: values.password,
+        name: values.name,
+        // avatar: values.avatar,
+        // role: values.role,
+      });
     },
   });
 
@@ -54,7 +58,6 @@ export default function SignUpForm() {
     values,
     errors,
     touched,
-    isSubmitting,
     isValid,
     handleChange,
     handleBlur,
@@ -182,9 +185,9 @@ export default function SignUpForm() {
                     type="submit"
                     className="w-full"
                     size="sm"
-                    disabled={!isValid || isSubmitting}
+                    disabled={!isValid || isPending}
                   >
-                    {isSubmitting ? "Signing up..." : "Sign Up"}
+                    {isPending ? "Signing up..." : "Sign Up"}
                   </Button>
                 </div>
               </form>

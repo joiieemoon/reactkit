@@ -1,40 +1,40 @@
 import { useFormik } from "formik";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { ChevronLeftIcon } from "../../../../icons";
 import InputField from "../../../../components/form/input/input-fields/InputField.tsx";
 import Button from "../../../../components/ui/button/Button";
 import { loginvalidationSchema } from "../../../../components/form/input/validation/index.ts";
-import { login } from "../../../../services/auth";
 import { loginFields } from "../../../../components/form/input/input-config/index.ts";
-import { toastSuccess } from "../../../../components/common/toast/toast.ts";
+import { toastSuccess, toastError } from "../../../../components/common/toast/toast.ts";
 import PageMeta from "../../../../components/common/pagemeta/PageMeta";
+import { useLogin } from "../../../../api/hooks";
 
 interface SignInFormValues {
-  email: string;
+  username: string;
   password: string;
 }
 
 const initialValues: SignInFormValues = {
-  email: "",
+  username: "",
   password: "",
 };
 
 export default function SignInForm() {
-  const navigate = useNavigate();
+  const { mutate: login, isPending } = useLogin({
+    onSuccessRedirect: "/dashboard",
+    onSuccess: () => {
+      toastSuccess("Signed in successfully!");
+    },
+    onError: (error) => {
+      toastError(error.message || "Login failed");
+    },
+  });
+
   const formik = useFormik<SignInFormValues>({
     initialValues,
     validationSchema: loginvalidationSchema,
-    onSubmit: async (values, { setSubmitting }) => {
-      try {
-        await login(values.email, values.password);
-        toastSuccess("Signed in successfully!");
-        // navigate("/dashboard");
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
-      } finally {
-        setSubmitting(false);
-      }
+    onSubmit: (values) => {
+      login({ username: values.username, password: values.password });
     },
   });
 
@@ -42,7 +42,6 @@ export default function SignInForm() {
     values,
     errors,
     touched,
-    isSubmitting,
     isValid,
     handleChange,
     handleBlur,
@@ -181,9 +180,9 @@ export default function SignInForm() {
                     type="submit"
                     className="w-full"
                     size="sm"
-                    disabled={!isValid || isSubmitting}
+                    disabled={!isValid || isPending}
                   >
-                    {isSubmitting ? "Signing in..." : "Sign in"}
+                    {isPending ? "Signing in..." : "Sign in"}
                   </Button>
                 </div>
               </form>
