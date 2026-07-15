@@ -1,6 +1,9 @@
-
+import { useAppSelector } from "../../../../store/hooks";
+import { selectUser } from "../../../../store/selectors";
 
 export default function UserInfoCard() {
+  const user = useAppSelector(selectUser);
+
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -16,7 +19,7 @@ export default function UserInfoCard() {
                   First Name
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  Joiieee
+                  {user?.firstName || "Guest"}
                 </p>
               </div>
 
@@ -25,7 +28,7 @@ export default function UserInfoCard() {
                   Last Name
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  dev
+                  {user?.lastName || ""}
                 </p>
               </div>
 
@@ -34,7 +37,7 @@ export default function UserInfoCard() {
                   Email address
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  joieee@dev.com
+                  {user?.email || "guest@example.com"}
                 </p>
               </div>
 
@@ -43,7 +46,7 @@ export default function UserInfoCard() {
                   Phone
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  +09 363 398 46
+                  {user?.phone || "N/A"}
                 </p>
               </div>
 
@@ -52,14 +55,13 @@ export default function UserInfoCard() {
                   Bio
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  Team Manager
+                  {user?.address?.city || "Team Manager"}
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-   
     </>
   );
 }

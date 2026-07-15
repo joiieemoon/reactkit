@@ -62,7 +62,7 @@ export const selectAuthError = createSelector(
 /**
  * Select user role.
  */
-export const selectUserRole = createSelector(
-  [selectUser],
-  (user) => user?.role,
-);
+// export const selectUserRole = createSelector(
+//   [selectUser],
+//   (user) => user?.role,
+// );

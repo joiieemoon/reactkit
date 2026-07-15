@@ -5,11 +5,15 @@ import Button from "../../../../components/ui/button/Button";
 import { Formik, Form } from "formik";
 
 import { locationFields } from "../../../../components/form/input/input-config";
-// import InputField from "../../../../components/form/input/InputField";
 import InputField from "../../../../components/form/input/input-fields/InputField";
-import { toastSuccess } from "../../../../components/common/toast/toast";
+import { useAppSelector } from "../../../../store/hooks";
+import { selectUser } from "../../../../store/selectors";
+import { useUpdateProfile } from "../../../../api/hooks";
+
 export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const user = useAppSelector(selectUser);
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
 
   interface LocationFormValues {
     country: string;
@@ -19,11 +23,28 @@ export default function UserAddressCard() {
   }
 
   const initialValues: LocationFormValues = {
-    country: "India ",
-    cityState: "Ahmedabad, India .",
-    postalCode: "386525 ",
+    country: user?.address?.country || "India",
+    cityState: user?.address?.city || "Ahmedabad, India",
+    postalCode: user?.address?.postalCode || "386525",
     taxId: "AS4568384",
   };
+
+  const handleSubmit = async (values: LocationFormValues) => {
+    try {
+      // Update profile with the form values
+      updateProfile({
+        address: {
+          country: values.country,
+          city: values.cityState,
+          postalCode: values.postalCode,
+        },
+      });
+      closeModal();
+    } catch (error) {
+      console.error("Failed to update address", error);
+    }
+  };
+
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -39,7 +60,7 @@ export default function UserAddressCard() {
                   Country
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  India.
+                  {user?.address?.country || "India"}
                 </p>
               </div>
 
@@ -48,7 +69,7 @@ export default function UserAddressCard() {
                   City/State
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  Ahemdabad ,India
+                  {user?.address?.city || "Ahmedabad, India"}
                 </p>
               </div>
 
@@ -57,7 +78,7 @@ export default function UserAddressCard() {
                   Postal Code
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  385254
+                  {user?.address?.postalCode || "385254"}
                 </p>
               </div>
 
@@ -110,12 +131,7 @@ export default function UserAddressCard() {
 
           <Formik
             initialValues={initialValues}
-            onSubmit={(values, { setSubmitting }) => {
-              console.log("Address Data:", values);
-              toastSuccess("Address updated successfully!");
-              setSubmitting(false);
-              closeModal();
-            }}
+            onSubmit={handleSubmit}
           >
             {({
               values,
@@ -175,8 +191,8 @@ export default function UserAddressCard() {
                     Close
                   </button>
 
-                  <Button type="submit" size="sm" disabled={isSubmitting}>
-                    {isSubmitting ? "Saving..." : "Save Changes"}
+                  <Button type="submit" size="sm" disabled={isSubmitting || isPending}>
+                    {isSubmitting || isPending ? "Saving..." : "Save Changes"}
                   </Button>
                 </div>
               </Form>

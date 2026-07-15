@@ -66,7 +66,17 @@ export interface UserProfile {
   lastName: string;
   username: string;
   image: string;
-  creationAt: string;
+  creationAt?: string;
+  // Additional fields from /auth/me endpoint
+  phone?: string;
+  address?: {
+    address?: string;
+    city?: string;
+    state?: string;
+    stateCode?: string;
+    postalCode?: string;
+    country?: string;
+  };
 }
 
 /**

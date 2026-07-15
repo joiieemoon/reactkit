@@ -25,7 +25,7 @@ export const AUTH_ENDPOINTS = {
     requiresAuth: false,
   } as const,
   PROFILE: {
-    path: "/auth/profile",
+    path: "/auth/me",
     method: HttpMethod.GET,
     requiresAuth: true,
   } as const,

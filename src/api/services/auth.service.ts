@@ -4,7 +4,7 @@
  */
 
 import { axiosInstance } from "../client/axios";
-import { AUTH_ENDPOINTS } from "../endpoints";
+import { AUTH_ENDPOINTS, USER_ENDPOINTS } from "../endpoints";
 import {
   LoginPayload,
   LoginResponse,
@@ -53,6 +53,23 @@ export async function getCurrentUser(): Promise<UserProfile> {
   const response = await axiosInstance.get<UserProfile>(
     AUTH_ENDPOINTS.PROFILE.path,
   );
+  return response.data;
+}
+
+/**
+ * Update user profile.
+ * Uses the user ID from the profile to update via /users/{id} endpoint.
+ */
+export async function updateUserProfile(
+  payload: Partial<UserProfile>,
+  userId?: number,
+): Promise<UserProfile> {
+  const id = userId || payload.id;
+  if (!id) {
+    throw new Error("User ID is required to update profile");
+  }
+  const path = USER_ENDPOINTS.UPDATE.path.replace("{id}", String(id));
+  const response = await axiosInstance.put<UserProfile>(path, payload);
   return response.data;
 }
 
