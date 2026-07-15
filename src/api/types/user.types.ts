@@ -9,12 +9,15 @@ import { ApiResponse, PaginatedResponse } from "./api.types";
  * User entity from API.
  */
 export interface User {
+  [key: string]: unknown;
   id: number;
   email: string;
+  username?: string;
   password?: string;
   name: string;
   role: string;
   avatar: string;
+  image?: string;
   creationAt: string;
 }
 

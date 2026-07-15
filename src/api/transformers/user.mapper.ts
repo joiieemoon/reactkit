@@ -7,22 +7,24 @@ import { User, CreateUserPayload, UpdateUserPayload } from "../types";
 
 /**
  * Transform user API response.
+ * Handles DummyJSON API response format.
  */
-export function mapUser(response: User): User {
+export function mapUser(response: Record<string, unknown>): User {
   return {
-    id: response.id,
-    email: response.email,
-    name: response.name,
-    role: response.role,
-    avatar: response.avatar,
-    creationAt: response.creationAt,
+    id: response.id as number,
+    email: response.email as string,
+    username: response.username as string,
+    name: response.name as string,
+    role: response.role as string,
+    avatar: (response.image as string) || (response.avatar as string),
+    creationAt: response.creationAt as string,
   };
 }
 
 /**
  * Transform user array response.
  */
-export function mapUsers(response: User[]): User[] {
+export function mapUsers(response: Record<string, unknown>[]): User[] {
   return response.map(mapUser);
 }
 

@@ -3,6 +3,8 @@
  * Provides consistent, type-safe query key management.
  */
 
+import { UserQueryParams } from "../types";
+
 /**
  * Query key factory for authentication.
  */
@@ -20,7 +22,7 @@ export const AUTH_QUERY_KEYS = {
 export const USER_QUERY_KEYS = {
   ALL: ["users"] as const,
   LISTS: () => [...USER_QUERY_KEYS.ALL, "list"] as const,
-  LIST: (filters?: Record<string, unknown>) =>
+  LIST: (filters?: UserQueryParams) =>
     [...USER_QUERY_KEYS.LISTS(), filters] as const,
   DETAILS: () => [...USER_QUERY_KEYS.ALL, "detail"] as const,
   DETAIL: (id: number) => [...USER_QUERY_KEYS.DETAILS(), id] as const,

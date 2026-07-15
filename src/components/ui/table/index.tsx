@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, CSSProperties } from "react";
 
 // Props for Table
 interface TableProps {
@@ -16,6 +16,7 @@ interface TableHeaderProps {
 interface TableBodyProps {
   children: ReactNode; // Body row(s)
   className?: string; // Optional className for styling
+  style?: CSSProperties; // Optional inline styles
 }
 
 // Props for TableRow
@@ -42,8 +43,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({ children, className }) => {
 };
 
 // TableBody Component
-const TableBody: React.FC<TableBodyProps> = ({ children, className }) => {
-  return <tbody className={className}>{children}</tbody>;
+const TableBody: React.FC<TableBodyProps> = ({ children, className, style }) => {
+  return <tbody className={className} style={style}>{children}</tbody>;
 };
 
 // TableRow Component

@@ -60,6 +60,7 @@ export interface SignupResponse {
  * User profile from API.
  */
 export interface UserProfile {
+  [key: string]: unknown;
   id: number;
   email: string;
   firstName: string;

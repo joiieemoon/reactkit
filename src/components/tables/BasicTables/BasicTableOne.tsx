@@ -11,130 +11,71 @@ import Pagination from "../../common/pagination";
 import { TrashBinIcon } from "../../../icons";
 import { DeleteConfirmationModal } from "../../ui/confirmation-modal";
 import { SearchInput } from "../../ui/search-input";
-import { useSearch } from "../../../hooks/useSearch";
 import { usePagination } from "../../../hooks/usePagination";
 import { sortData } from "../../../utils/sortData";
 import { EmptyState } from "../../common/empty-state";
 import { TableLoader } from "../../common/table-loader";
 import type { SortConfig } from "../../../types/table.types";
-
-interface Order {
-  [key: string]: unknown;
-  id: number;
-  user: {
-    image: string;
-    name: string;
-    role: string;
-  };
-  projectName: string;
-  status: string;
-  budget: string;
-}
-
-const tableData: Order[] = [
-  {
-    id: 1,
-    user: {
-      image: "/images/user/user-17.jpg",
-      name: "Aarav Sharma",
-      role: "Frontend Developer",
-    },
-    projectName: "E-Commerce Website",
-    budget: "3.9K",
-    status: "Active",
-  },
-  {
-    id: 2,
-    user: {
-      image: "/images/user/user-18.jpg",
-      name: "Priya Patel",
-      role: "Project Manager",
-    },
-    projectName: "ERP System",
-    budget: "24.9K",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    user: {
-      image: "/images/user/user-19.jpg",
-      name: "Rahul Verma",
-      role: "Content Writer",
-    },
-    projectName: "Corporate Blog",
-    budget: "12.7K",
-    status: "Active",
-  },
-  {
-    id: 4,
-    user: {
-      image: "/images/user/user-20.jpg",
-      name: "Sneha Iyer",
-      role: "Digital Marketing Specialist",
-    },
-    projectName: "Social Media Campaign",
-    budget: "2.8K",
-    status: "Cancel",
-  },
-  {
-    id: 5,
-    user: {
-      image: "/images/user/user-21.jpg",
-      name: "Vikram Singh",
-      role: "Full Stack Developer",
-    },
-    projectName: "Business Website",
-    budget: "4.5K",
-    status: "Active",
-  },
-  {
-    id: 6,
-    user: {
-      image: "/images/user/user-22.jpg",
-      name: "Ananya Desai",
-      role: "UI/UX Designer",
-    },
-    projectName: "Mobile App Design",
-    budget: "6.2K",
-    status: "Pending",
-  },
-  {
-    id: 7,
-    user: {
-      image: "/images/user/user-23.jpg",
-      name: "Rohan Mehta",
-      role: "Backend Developer",
-    },
-    projectName: "API Development",
-    budget: "8.4K",
-    status: "Active",
-  },
-  {
-    id: 8,
-    user: {
-      image: "/images/user/user-24.jpg",
-      name: "Neha Joshi",
-      role: "QA Engineer",
-    },
-    projectName: "Testing Automation",
-    budget: "5.1K",
-    status: "Pending",
-  },
-];
+import { useUsers } from "../../../api/hooks";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteUser } from "../../../api/services";
+import { USER_QUERY_KEYS } from "../../../api/query";
+import { toastSuccess, toastError } from "../../common/toast";
+import { User, UserQueryParams } from "../../../api/types";
+import { Virtuoso } from "react-virtuoso";
 
 export default function BasicTableOne() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
-  const [isLoading] = useState(false);
-
-  // Search
-  const { search, setSearch, filteredData } = useSearch<Order>({
-    data: tableData,
-    searchKeys: ["user.name", "user.role", "projectName", "status", "budget"],
-    debounceDelay: 300,
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterParams, setFilterParams] = useState<UserQueryParams>({
+    limit: 10,
+    offset: 0,
   });
+
+  // Fetch users from API with search/filter params
+  const { data, isLoading, error, refetch } = useUsers(filterParams);
+
+  // Delete mutation
+  const queryClient = useQueryClient();
+  const { mutate: deleteUserMutation } = useMutation({
+    mutationKey: USER_QUERY_KEYS.ALL,
+    mutationFn: async (id: number) => {
+      await deleteUser(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: USER_QUERY_KEYS.ALL });
+      toastSuccess("User deleted successfully!");
+    },
+    onError: () => {
+      toastError("Failed to delete user. Please try again.");
+    },
+  });
+
+  // Get users array from API response
+  const users: User[] = data?.users || [];
+
+  // Handle search - use client-side search on fetched data
+  const handleSearch = useCallback((value: string) => {
+    setSearchQuery(value);
+    setFilterParams((prev) => ({
+      ...prev,
+      offset: 0, // Reset to first page on search
+    }));
+  }, []);
+
+  // Client-side filtering for search
+  const filteredData = useMemo(() => {
+    if (!searchQuery) return users;
+    return users.filter(
+      (user) =>
+        user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.role?.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [users, searchQuery]);
 
   // Sorting
   const sortedData = useMemo(() => {
@@ -166,11 +107,13 @@ export default function BasicTableOne() {
   const handleConfirmDelete = useCallback(async () => {
     if (deleteId === null) return;
     setIsDeleting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Deleted order:", deleteId);
-    setIsDeleting(false);
-    closeDelete();
-  }, [deleteId, closeDelete]);
+    try {
+      deleteUserMutation(deleteId);
+    } finally {
+      setIsDeleting(false);
+      closeDelete();
+    }
+  }, [deleteId, closeDelete, deleteUserMutation]);
 
   const toggleSort = useCallback((field: string) => {
     setSortConfig((prev) => {
@@ -188,16 +131,81 @@ export default function BasicTableOne() {
     return sortConfig.direction === "asc" ? " ▲" : " ▼";
   };
 
+  // Get status based on user role
+  const getUserStatus = (role: string): "Active" | "Pending" | "Cancel" => {
+    if (role === "admin") return "Active";
+    if (role === "moderator") return "Pending";
+    return "Cancel";
+  };
+
+  // Get badge color based on status
+  const getBadgeColor = (status: string): "success" | "warning" | "error" => {
+    if (status === "Active") return "success";
+    if (status === "Pending") return "warning";
+    return "error";
+  };
+
+  // Render table row for virtualization
+  const renderTableRow = (user: User) => (
+    <TableRow key={user.id}>
+      <TableCell className="px-5 py-4 sm:px-6 text-start">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 overflow-hidden rounded-full">
+            <img
+              width={40}
+              height={40}
+              src={user.avatar}
+              alt={user.name}
+            />
+          </div>
+          <div>
+            <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              {user.name}
+            </span>
+            <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
+              {user.creationAt}
+            </span>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+        {user.email}
+      </TableCell>
+      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+        {user.role}
+      </TableCell>
+      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+        <Badge
+          size="sm"
+          color={getBadgeColor(getUserStatus(user.role))}
+        >
+          {getUserStatus(user.role)}
+        </Badge>
+      </TableCell>
+      <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+        <button
+          onClick={() => openDelete(user.id)}
+          className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 hover:text-error-500 transition-colors"
+        >
+          <TrashBinIcon className="w-5 h-5" />
+        </button>
+      </TableCell>
+    </TableRow>
+  );
+
   return (
     <>
       <div className="flex items-center justify-between mb-4">
         <SearchInput
-          placeholder="Search orders..."
+          placeholder="Search users..."
           className="max-w-sm"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)}
         />
-        <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+        <button
+          onClick={() => refetch()}
+          className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+        >
           <svg
             className="stroke-current fill-white dark:fill-gray-800"
             width="20"
@@ -233,9 +241,16 @@ export default function BasicTableOne() {
               strokeWidth="1.5"
             />
           </svg>
-          Filter
+          Refresh
         </button>
       </div>
+
+      {error && (
+        <div className="mb-4 p-4 text-red-500 bg-red-50 rounded-lg">
+          Failed to load users. Please try again.
+        </div>
+      )}
+
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
           <Table>
@@ -244,27 +259,26 @@ export default function BasicTableOne() {
               <TableRow>
                 <th
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
-                  onClick={() => toggleSort("user.name")}
+                  onClick={() => toggleSort("name")}
                 >
-                  User{getSortIndicator("user.name")}
+                  User{getSortIndicator("name")}
                 </th>
                 <th
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
-                  onClick={() => toggleSort("projectName")}
+                  onClick={() => toggleSort("email")}
                 >
-                  Project Name{getSortIndicator("projectName")}
+                  Email{getSortIndicator("email")}
                 </th>
                 <th
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
-                  onClick={() => toggleSort("status")}
+                  onClick={() => toggleSort("role")}
                 >
-                  Status{getSortIndicator("status")}
+                  Role{getSortIndicator("role")}
                 </th>
                 <th
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
-                  onClick={() => toggleSort("budget")}
                 >
-                  Budget{getSortIndicator("budget")}
+                  Status
                 </th>
                 <TableCell
                   isHeader
@@ -275,7 +289,7 @@ export default function BasicTableOne() {
               </TableRow>
             </TableHeader>
 
-            {/* Table Body */}
+            {/* Table Body with Virtuoso Virtualization */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {isLoading ? (
                 <TableLoader rows={5} columns={5} avatar actions />
@@ -285,66 +299,19 @@ export default function BasicTableOne() {
                     <EmptyState
                       title="No results found"
                       description={
-                        search
-                          ? `No orders match "${search}". Try a different search term.`
-                          : "There are no orders to display at the moment."
+                        searchQuery
+                          ? `No users match "${searchQuery}". Try a different search term.`
+                          : "There are no users to display at the moment."
                       }
                     />
                   </td>
                 </TableRow>
               ) : (
-                currentData.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="px-5 py-4 sm:px-6 text-start">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 overflow-hidden rounded-full">
-                          <img
-                            width={40}
-                            height={40}
-                            src={order.user.image}
-                            alt={order.user.name}
-                          />
-                        </div>
-                        <div>
-                          <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                            {order.user.name}
-                          </span>
-                          <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                            {order.user.role}
-                          </span>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                      {order.projectName}
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                      <Badge
-                        size="sm"
-                        color={
-                          order.status === "Active"
-                            ? "success"
-                            : order.status === "Pending"
-                              ? "warning"
-                              : "error"
-                        }
-                      >                                                                                 
-                        {order.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      {order.budget}
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      <button
-                        onClick={() => openDelete(order.id)}
-                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 hover:text-error-500 transition-colors"
-                      >
-                        <TrashBinIcon className="w-5 h-5" />
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))
+                <Virtuoso
+                  style={{ height: "400px", width: "100%" }}
+                  data={currentData}
+                  itemContent={(_, user) => renderTableRow(user)}
+                />
               )}
             </TableBody>
           </Table>
