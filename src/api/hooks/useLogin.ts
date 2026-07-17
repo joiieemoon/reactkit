@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login, storeToken } from "../services";
-import { LoginPayload, TokenPair } from "../types";
+import { ApiError, LoginPayload, TokenPair } from "../types";
 import { AUTH_MUTATION_KEYS, USER_QUERY_KEYS } from "../query";
 import { mapLoginResponse } from "../transformers/auth.mapper";
 import { setCredentials } from "../../store/slices/authSlice";
@@ -15,9 +15,14 @@ import { setCredentials } from "../../store/slices/authSlice";
 /**
  * Login mutation options.
  */
+/**
+ * Error type augmented with normalized error info from the error interceptor.
+ */
+export type NormalizedApiError = Error & { normalizedError?: ApiError };
+
 interface UseLoginOptions {
   onSuccessRedirect?: string;
-  onError?: (error: Error) => void;
+  onError?: (error: NormalizedApiError) => void;
   onSuccess?: (data: TokenPair) => void;
 }
 
@@ -65,7 +70,7 @@ export function useLogin(options?: UseLoginOptions) {
       }
     },
     onError: (error) => {
-      options?.onError?.(error as Error);
+      options?.onError?.(error as NormalizedApiError);
     },
   });
 }

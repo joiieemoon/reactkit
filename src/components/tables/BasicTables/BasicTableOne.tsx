@@ -1,10 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "../../ui/table";
+// import { TableCell, TableRow } from "../../ui/table";
 import { useState, useMemo, useCallback } from "react";
 import Badge from "../../ui/badge/Badge";
 import Pagination from "../../common/pagination";
@@ -22,7 +16,39 @@ import { deleteUser } from "../../../api/services";
 import { USER_QUERY_KEYS } from "../../../api/query";
 import { toastSuccess, toastError } from "../../common/toast";
 import { User, UserQueryParams } from "../../../api/types";
-import { Virtuoso } from "react-virtuoso";
+import { TableVirtuoso, TableComponents } from "react-virtuoso";
+
+// Column width map — shared between header and body cells so they always line up
+const COLS = {
+  name: "28%",
+  email: "26%",
+  role: "16%",
+  status: "16%",
+  actions: "14%",
+};
+
+// Custom table components so TableVirtuoso renders real <table>/<thead>/<tbody>/<tr> markup
+const VirtuosoTableComponents: TableComponents<User> = {
+  Scroller: (props) => (
+    <div {...props} className="max-w-full overflow-x-auto" />
+  ),
+  Table: (props) => (
+    <table {...props} className="w-full table-fixed border-collapse" />
+  ),
+  TableHead: (props) => (
+    <thead
+      {...props}
+      className="border-b border-gray-100 dark:border-white/[0.05]"
+    />
+  ),
+  TableRow: (props) => (
+    <tr
+      {...props}
+      className="border-b border-gray-100 dark:border-white/[0.05] last:border-0"
+    />
+  ),
+  TableBody: (props) => <tbody {...props} />,
+};
 
 export default function BasicTableOne() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
@@ -31,7 +57,7 @@ export default function BasicTableOne() {
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterParams, setFilterParams] = useState<UserQueryParams>({
-    limit: 10,
+    limit: 100,
     offset: 0,
   });
 
@@ -118,9 +144,7 @@ export default function BasicTableOne() {
   const toggleSort = useCallback((field: string) => {
     setSortConfig((prev) => {
       if (prev?.field === field) {
-        return prev.direction === "asc"
-          ? { field, direction: "desc" }
-          : null;
+        return prev.direction === "asc" ? { field, direction: "desc" } : null;
       }
       return { field, direction: "asc" };
     });
@@ -144,54 +168,6 @@ export default function BasicTableOne() {
     if (status === "Pending") return "warning";
     return "error";
   };
-
-  // Render table row for virtualization
-  const renderTableRow = (user: User) => (
-    <TableRow key={user.id}>
-      <TableCell className="px-5 py-4 sm:px-6 text-start">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 overflow-hidden rounded-full">
-            <img
-              width={40}
-              height={40}
-              src={user.avatar}
-              alt={user.name}
-            />
-          </div>
-          <div>
-            <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-              {user.name}
-            </span>
-            <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-              {user.creationAt}
-            </span>
-          </div>
-        </div>
-      </TableCell>
-      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        {user.email}
-      </TableCell>
-      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        {user.role}
-      </TableCell>
-      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        <Badge
-          size="sm"
-          color={getBadgeColor(getUserStatus(user.role))}
-        >
-          {getUserStatus(user.role)}
-        </Badge>
-      </TableCell>
-      <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-        <button
-          onClick={() => openDelete(user.id)}
-          className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 hover:text-error-500 transition-colors"
-        >
-          <TrashBinIcon className="w-5 h-5" />
-        </button>
-      </TableCell>
-    </TableRow>
-  );
 
   return (
     <>
@@ -253,48 +229,16 @@ export default function BasicTableOne() {
 
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
-          <Table>
-            {/* Table Header */}
-            <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
-              <TableRow>
-                <th
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
-                  onClick={() => toggleSort("name")}
-                >
-                  User{getSortIndicator("name")}
-                </th>
-                <th
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
-                  onClick={() => toggleSort("email")}
-                >
-                  Email{getSortIndicator("email")}
-                </th>
-                <th
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
-                  onClick={() => toggleSort("role")}
-                >
-                  Role{getSortIndicator("role")}
-                </th>
-                <th
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none"
-                >
-                  Status
-                </th>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHeader>
-
-            {/* Table Body with Virtuoso Virtualization */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {isLoading ? (
+          {isLoading ? (
+            <table className="w-full table-fixed border-collapse">
+              <tbody>
                 <TableLoader rows={5} columns={5} avatar actions />
-              ) : currentData.length === 0 ? (
-                <TableRow>
+              </tbody>
+            </table>
+          ) : currentData.length === 0 ? (
+            <table className="w-full table-fixed border-collapse">
+              <tbody>
+                <tr>
                   <td colSpan={5} className="px-0 py-0">
                     <EmptyState
                       title="No results found"
@@ -305,16 +249,114 @@ export default function BasicTableOne() {
                       }
                     />
                   </td>
-                </TableRow>
-              ) : (
-                <Virtuoso
-                  style={{ height: "400px", width: "100%" }}
-                  data={currentData}
-                  itemContent={(_, user) => renderTableRow(user)}
-                />
+                </tr>
+              </tbody>
+            </table>
+          ) : (
+            <TableVirtuoso
+              style={{ height: 400 }}
+              data={currentData}
+              components={VirtuosoTableComponents}
+              fixedHeaderContent={() => (
+                <tr className="bg-white dark:bg-gray-900">
+                  <th
+                    style={{ width: COLS.name }}
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none bg-white dark:bg-gray-900"
+                    onClick={() => toggleSort("name")}
+                  >
+                    User{getSortIndicator("name")}
+                  </th>
+                  <th
+                    style={{ width: COLS.email }}
+                    className="px-4 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none bg-white dark:bg-gray-900"
+                    onClick={() => toggleSort("email")}
+                  >
+                    Email{getSortIndicator("email")}
+                  </th>
+                  <th
+                    style={{ width: COLS.role }}
+                    className="px-4 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer select-none bg-white dark:bg-gray-900"
+                    onClick={() => toggleSort("role")}
+                  >
+                    Role{getSortIndicator("role")}
+                  </th>
+                  <th
+                    style={{ width: COLS.status }}
+                    className="px-4 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 bg-white dark:bg-gray-900"
+                  >
+                    Status
+                  </th>
+                  <th
+                    style={{ width: COLS.actions }}
+                    className="px-4 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 bg-white dark:bg-gray-900"
+                  >
+                    Actions
+                  </th>
+                </tr>
               )}
-            </TableBody>
-          </Table>
+              itemContent={(_, user) => (
+                <>
+                  <td
+                    style={{ width: COLS.name }}
+                    className="px-5 py-4 sm:px-6 text-start"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 shrink-0 overflow-hidden rounded-full">
+                        <img
+                          width={40}
+                          height={40}
+                          src={user.avatar}
+                          alt={user.name}
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="block truncate font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                          {user.name}
+                        </span>
+                        <span className="block truncate text-gray-500 text-theme-xs dark:text-gray-400">
+                          {user.creationAt}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    style={{ width: COLS.email }}
+                    className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 truncate"
+                  >
+                    {user.email}
+                  </td>
+                  <td
+                    style={{ width: COLS.role }}
+                    className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 truncate"
+                  >
+                    {user.role}
+                  </td>
+                  <td
+                    style={{ width: COLS.status }}
+                    className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400"
+                  >
+                    <Badge
+                      size="sm"
+                      color={getBadgeColor(getUserStatus(user.role))}
+                    >
+                      {getUserStatus(user.role)}
+                    </Badge>
+                  </td>
+                  <td
+                    style={{ width: COLS.actions }}
+                    className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400"
+                  >
+                    <button
+                      onClick={() => openDelete(user.id)}
+                      className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 hover:text-error-500 transition-colors"
+                    >
+                      <TrashBinIcon className="w-5 h-5" />
+                    </button>
+                  </td>
+                </>
+              )}
+            />
+          )}
         </div>
       </div>
 

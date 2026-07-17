@@ -5,7 +5,10 @@ import InputField from "../../../../components/form/input/input-fields/InputFiel
 import Button from "../../../../components/ui/button/Button";
 import { loginvalidationSchema } from "../../../../components/form/input/validation/index.ts";
 import { loginFields } from "../../../../components/form/input/input-config/index.ts";
-import { toastSuccess, toastError } from "../../../../components/common/toast/toast.ts";
+import {
+  toastSuccess,
+  toastError,
+} from "../../../../components/common/toast/toast.ts";
 import PageMeta from "../../../../components/common/pagemeta/PageMeta";
 import { useLogin } from "../../../../api/hooks";
 
@@ -26,7 +29,9 @@ export default function SignInForm() {
       toastSuccess("Signed in successfully!");
     },
     onError: (error) => {
-      toastError(error.message || "Login failed");
+      toastError(error.normalizedError?.message || "Login failed");
+
+      console.log(error.normalizedError?.message, "cheeeek");
     },
   });
 

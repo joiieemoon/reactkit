@@ -17,7 +17,7 @@ export interface ApiResponse<T> {
  * Normalized error structure.
  * Provides consistent error handling across the application.
  */
-export interface ApiError {
+export interface  ApiError {
   code: string;
   message: string;
   status: number;

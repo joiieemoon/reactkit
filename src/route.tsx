@@ -1,9 +1,9 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { lazy } from "react";
 // import { PublicRoute, ProtectedRoute } from "./components/common/routes";
 // import { PublicRoute, ProtectedRoute } from "./components/common/routes";
 import { PublicRoute } from "./components/common/routes";
-import {ProtectedRoute }from "./components/common/routes";
+import { ProtectedRoute } from "./components/common/routes";
 // Layouts
 const AppLayout = lazy(() => import("./components/layout/AppLayout"));
 
@@ -36,7 +36,8 @@ export const router = createBrowserRouter([
       </PublicRoute>
     ),
     children: [
-      { index: true, element: <SignIn /> },
+      // { index: true, element: <SignIn /> },
+      { index: true, element: <Navigate to="/signin" replace /> },
       { path: "signin", element: <SignIn /> },
       { path: "signup", element: <SignUp /> },
     ],
@@ -49,6 +50,7 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
+      { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: "dashboard", element: <Home /> },
 
       // Profile

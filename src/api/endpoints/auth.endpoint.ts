@@ -15,7 +15,7 @@ export const AUTH_ENDPOINTS = {
     requiresAuth: false,
   } as const,
   SIGNUP: {
-    path: "/users/",
+    path: "/users/add",
     method: HttpMethod.POST,
     requiresAuth: false,
   } as const,
