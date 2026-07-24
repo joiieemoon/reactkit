@@ -11,12 +11,16 @@ export interface InputProps {
     name?: string;
     placeholder?: string;
 
-    value?: string | number;
+    value?: string | number | string[];
 
     onChange?: (
-        e: React.ChangeEvent<
-            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-        >
+        event:
+            | React.ChangeEvent<
+                  HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+              >
+            | string[]
+            | boolean
+            | string
     ) => void;
 
     onBlur?: React.FocusEventHandler<
@@ -48,7 +52,19 @@ export interface InputProps {
 
     children?: React.ReactNode;
 
-    as?: "input" | "textarea" | "select";
+    as?:
+        | "input"
+        | "textarea"
+        | "select"
+        | "checkbox"
+        | "radio"
+        | "file"
+        | "multi-select"
+        | string;
+
+    options?: { value: string; label?: string; text?: string }[];
+    checked?: boolean;
+    defaultSelected?: string[];
 }
 
 export interface FormField {

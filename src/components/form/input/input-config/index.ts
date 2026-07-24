@@ -102,6 +102,7 @@ export const loginFields: FormField[] = [
         autoComplete: "password",
     },
 
+
 ];
 
 export interface ProfileField {
@@ -161,6 +162,7 @@ export const personalFields: ProfileField[] = [
         required: true,
         colSpan: 6,
     },
+
     {
         name: "lastName",
         label: "Last Name",

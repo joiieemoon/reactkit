@@ -4,6 +4,7 @@ import { lazy } from "react";
 // import { PublicRoute, ProtectedRoute } from "./components/common/routes";
 import { PublicRoute } from "./components/common/routes";
 import { ProtectedRoute } from "./components/common/routes";
+import MuiElements from "./features/mui";
 // Layouts
 const AppLayout = lazy(() => import("./components/layout/AppLayout"));
 
@@ -60,7 +61,7 @@ export const router = createBrowserRouter([
       { path: "form-elements", element: <FormElements /> },
 
       // Tables
-      { path: "basic-tables", element: <BasicTables /> },
+      { path: "mui-elements", element: <MuiElements /> },
     ],
   },
   {

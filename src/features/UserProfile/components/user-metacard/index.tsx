@@ -10,7 +10,7 @@ import {
 import InputField from "../../../../components/form/input/input-fields/InputField";
 import { useAppSelector } from "../../../../store/hooks";
 import { selectUser } from "../../../../store/selectors";
-import { useUpdateProfile } from "../../../../api/hooks";
+import { useUpdateProfile } from "../../../../api/hooks";   
 import { profileValidationSchema } from "../../../../components/form/input/validation";
 
 export default function UserMetaCard() {

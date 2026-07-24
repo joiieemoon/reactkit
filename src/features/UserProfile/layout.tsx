@@ -3,6 +3,7 @@ import UserMetaCard from "./components/user-metacard";
 import UserInfoCard from "./components/user-infocard";
 import UserAddressCard from "./components/user-addresscard";
 import { useUserProfile } from "../../api/hooks";
+import { Spinner } from "../../components/common/spinner";
 
 export default function UserProfiles() {
   const { isLoading, error } = useUserProfile(true);
@@ -16,6 +17,7 @@ export default function UserProfiles() {
         />
         <div className="flex items-center justify-center h-64">
           <div className="text-gray-500">Loading profile...</div>
+          <Spinner size="xl" />
         </div>
       </>
     );

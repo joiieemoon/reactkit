@@ -306,7 +306,7 @@ export default function BasicTableOne() {
                           width={40}
                           height={40}
                           src={user.avatar}
-                          alt={user.name}
+                          alt={user.email}
                         />
                       </div>
                       <div className="min-w-0">

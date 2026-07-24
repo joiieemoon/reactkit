@@ -35,7 +35,7 @@ export function toastWarning(message: string, options?: ToastOptions): string {
         ...options,
     });
 }
-
+    
 /**
  * Show an info toast (uses custom render).
  */

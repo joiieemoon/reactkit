@@ -7,7 +7,6 @@ import {
   GridIcon,
   HorizontaLDots,
   ListIcon,
-  PlugInIcon,
   TableIcon,
   UserCircleIcon,
 } from "../../icons";
@@ -32,11 +31,7 @@ const navItems: NavItem[] = [
     name: "User Profile",
     path: "/profile",
   },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
+
   {
     name: "Tables",
     icon: <TableIcon />,
@@ -46,12 +41,14 @@ const navItems: NavItem[] = [
 
 const othersItems: NavItem[] = [
   {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
+    name: "Forms",
+    icon: <ListIcon />,
+    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+  },
+  {
+    name: "Forms",
+    icon: <ListIcon />,
+    subItems: [{ name: "Mui Elements", path: "/mui-elements", pro: false }],
   },
 ];
 

@@ -30,6 +30,9 @@ const Input: FC<InputProps> = ({
   onFocus,
   onKeyDown,
   children,
+  options,
+  checked,
+  defaultSelected,
 }) => {
   return (
     <InputField
@@ -55,6 +58,9 @@ const Input: FC<InputProps> = ({
       errorMessage={errorMessage}
       onFocus={onFocus}
       onKeyDown={onKeyDown}
+      options={options}
+      checked={checked}
+      defaultSelected={defaultSelected}
     >
       {children}
     </InputField>

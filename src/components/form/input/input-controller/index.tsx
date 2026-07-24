@@ -30,7 +30,7 @@ const InputController = ({ control, ...props }: InputControllerProps) => {
       return <Input type="file" {...props} />;
 
     case "multi-select":
-      return <Input type="multi-select" {...props} />;
+      return <Input as="multi-select" {...props} />;
 
     default:
       return null;

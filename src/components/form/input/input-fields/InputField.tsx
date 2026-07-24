@@ -17,11 +17,13 @@ export interface InputFieldProps {
   placeholder?: string;
   value?: string | number | string[];
   onChange?: (
-    e:
+    event:
       | React.ChangeEvent<
           HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
         >
-      | { target: { value: string | number | boolean | string[] } },
+      | string[]
+      | boolean
+      | string,
   ) => void;
   className?: string;
   min?: string;
@@ -197,7 +199,9 @@ function TextAreaField({
         rows={rows ?? 3}
         value={String(value ?? "")}
         onChange={(val) =>
-          onChange?.({ target: { name, value: val } } as unknown as React.ChangeEvent<
+          onChange?.({
+            target: { name, value: val },
+          } as unknown as React.ChangeEvent<
             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
           >)
         }
@@ -231,11 +235,9 @@ function CheckboxField({
         label={label as string | undefined}
         checked={checked ?? false}
         id={id}
-        onChange={(val) =>
-          onChange?.({ target: { value: val } } as unknown as React.ChangeEvent<
-            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-          >)
-        }
+        onChange={(val) => {
+          onChange?.(val);
+        }}
         className={className}
         disabled={disabled}
       />
@@ -264,11 +266,9 @@ function RadioField({
         value={String(value ?? "")}
         checked={checked ?? false}
         label={String(label ?? "")}
-        onChange={(val) =>
-          onChange?.({ target: { value: val } } as unknown as React.ChangeEvent<
-            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-          >)
-        }
+        onChange={(val) => {
+          onChange?.(val);
+        }}
         className={className}
         disabled={disabled}
       />
@@ -364,13 +364,9 @@ function MultiSelectField({
       }))}
       value={value as string[] | undefined}
       defaultSelected={defaultSelected}
-      onChange={(selected) =>
-        onChange?.({
-          target: { value: selected },
-        } as unknown as React.ChangeEvent<
-          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-        >)
-      }
+      onChange={(selected) => {
+        onChange?.(selected);
+      }}
       disabled={disabled}
       placeholder={placeholder}
     />
